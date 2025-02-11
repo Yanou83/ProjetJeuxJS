@@ -79,6 +79,11 @@ export default class Game {
         // Dessiner la jauge de boost
         this.drawBoostGauge();
 
+        // Dessiner les flammes si le boost est actif
+        if (this.boostActive) {
+            this.player.drawFlames(this.ctx);
+        }
+
         // 3 - On regarde l'état du clavier, manette, souris et on met à jour
         // l'état des objets du jeu en conséquence
         this.update();

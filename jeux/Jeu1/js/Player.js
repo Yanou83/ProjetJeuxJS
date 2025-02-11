@@ -12,6 +12,13 @@ export default class Player extends ObjectGraphique {
         this.imageColor.src = "../images/scootercolor.png"; 
         this.image = new Image();
         this.image.src = "../images/scooter.png"; 
+        this.flameImageSrc = "../images/feu_boost.gif"; 
+        this.flameAnimation = null;
+        this.flameCanvas = document.createElement('canvas');
+        this.flameCanvas.width = 40;
+        this.flameCanvas.height = 100;
+
+        this.initFlameAnimation();
     }
 
     draw(ctx) {
@@ -193,6 +200,31 @@ export default class Player extends ObjectGraphique {
         ctx.quadraticCurveTo(x, y, x + radius, y);
         ctx.closePath();
         ctx.fill();
+    }
+
+    initFlameAnimation() {
+        gifler(this.flameImageSrc).get((anim) => {
+            this.flameAnimation = anim;
+            this.flameAnimation.animateInCanvas(this.flameCanvas); // Active l'animation dans le canvas
+        });
+    }
+
+    drawFlames(ctx) {
+        if (!this.flameAnimation) return; // Si l'animation n'est pas chargée, on ne fait rien
+
+        const flameWidth = 40; 
+        const flameHeight = 100; 
+        const flameX = this.x - this.w / 2 - flameWidth - 10; 
+        const flameY = this.y + this.h / 2 - flameHeight + 70;
+
+        ctx.save();
+        ctx.translate(flameX, flameY);
+        ctx.rotate(260 * Math.PI / 180); // Rotation du feu
+
+        // Dessiner l'animation du GIF
+        ctx.drawImage(this.flameCanvas, -flameWidth / 2, -flameHeight / 2, flameWidth, flameHeight);
+
+        ctx.restore();
     }
 
     move() {
