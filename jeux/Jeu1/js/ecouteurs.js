@@ -1,0 +1,29 @@
+function initListeners(inputStates, canvas) {
+    window.onkeydown = (event) => {
+        console.log("Touche pressée : " + event.key);
+        if(event.key === " ") {
+            inputStates.Space = true;
+        }
+        if(event.key === "f" || event.key === "F") {
+            inputStates.F = true;
+        }        
+    }
+
+    window.onkeyup = (event) => {
+        console.log("Touche relachée : " + event.key);
+        if(event.key === " ") {
+            inputStates.Space = false;
+        }
+        if(event.key === "f" || event.key === "F") {
+            inputStates.F = false;
+        }
+    }
+
+    window.onmousemove = (event) => {
+        // get proper x and y for the mouse in the canvas
+        inputStates.mouseX = event.clientX - canvas.getBoundingClientRect().left;
+        inputStates.mouseY = event.clientY - canvas.getBoundingClientRect().top;
+    }
+}
+
+export { initListeners };
