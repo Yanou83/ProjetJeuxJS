@@ -39,6 +39,12 @@ export default class Game {
         console.log("Game initialisé");
     }
 
+    // Charger toutes les assets avant de démarrer le jeu
+    async loadAssets() {
+        const promises = this.objetsGraphiques.map(obj => obj.load ? obj.load() : Promise.resolve());
+        await Promise.all(promises);
+    }
+
     generatePlatforms() {
         const platformTemplates = [
             { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200, couleur: "red" },

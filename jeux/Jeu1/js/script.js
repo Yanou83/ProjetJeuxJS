@@ -16,6 +16,9 @@ async function init() {
     // typiquement dans init on charge des images, des sons, etc.
     await game.init();
 
+    // Attendre que tous les éléments soient chargés
+    await game.loadAssets();
+
     // on peut démarrer le jeu
     game.start();
 }

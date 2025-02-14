@@ -1,19 +1,27 @@
-function drawCircleImmediat(ctx, x, y, r, color) {
+function drawCircleImmediat(ctx, x, y, r, color = null) {
     // BONNE PRATIQUE : on sauvegarde le contexte
     // des qu'une fonction ou un bout de code le modifie
     // couleur, épaisseur du trait, systeme de coordonnées etc.
-    ctx.save();
+    ctx.save(
+        // AUTRE BONNE PRATIQUE : on dessine toujours
+        // en 0, 0 !!!! et on utilise les transformations
+        // géométriques pour placer le dessin, le tourner, le rescaler
+        // etc.
+    );
 
     // AUTRE BONNE PRATIQUE : on dessine toujours
     // en 0, 0 !!!! et on utilise les transformations
     // géométriques pour placer le dessin, le tourner, le rescaler
     // etc.
-    ctx.fillStyle = color;
+
+    if (color != null) {
+        ctx.fillStyle = color;
+    }
     ctx.beginPath();
 
     // on translate le systeme de coordonnées pour placer le cercle
     // en x, y
-    ctx.translate(x, y);     
+    ctx.translate(x, y);
     ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.fill();
 
@@ -49,6 +57,7 @@ function drawGrid(ctx, canvas, nbLignes, nbColonnes, couleur, largeurLignes) {
     // gpu call pour dessiner d'un coup toutes les lignes
     ctx.stroke();
 
+    // BONNE PRATIQUE : on restore le contexte à la fin
     ctx.restore();
 }
 

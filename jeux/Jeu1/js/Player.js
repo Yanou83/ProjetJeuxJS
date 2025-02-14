@@ -1,5 +1,6 @@
 import ObjectGraphique from "./ObjectGraphique.js";
 import { drawCircleImmediat } from "./utils.js";
+import Vehicule from "./Vehicule.js";
 
 export default class Player extends ObjectGraphique {
     constructor(x, y) {
@@ -8,10 +9,7 @@ export default class Player extends ObjectGraphique {
         this.vitesseY = 0;
         this.couleur = "green";
         this.angle = 0;
-        this.imageColor = new Image();
-        this.imageColor.src = "../images/scootercolor.png"; 
-        this.image = new Image();
-        this.image.src = "../images/scooter.png"; 
+        this.vehicule = new Vehicule(this.couleur);
         this.flameImageSrc = "../images/feu_boost.gif"; 
         this.flameAnimation = null;
         this.flameCanvas = document.createElement('canvas');
@@ -19,6 +17,11 @@ export default class Player extends ObjectGraphique {
         this.flameCanvas.height = 100;
 
         this.initFlameAnimation();
+    }
+
+    // Charger toutes les images avant de démarrer le jeu
+    load() {
+        return this.vehicule.load();
     }
 
     draw(ctx) {
@@ -30,7 +33,7 @@ export default class Player extends ObjectGraphique {
         // Dessiner le véhicule plus bas
         ctx.save();
         ctx.translate(0, this.angle >= Math.PI / 14 ? 40 : 20); // Ajuster cette valeur pour positionner le véhicule plus bas
-        this.drawVehicule(ctx);
+        this.vehicule.draw(ctx);
         ctx.restore();
 
         // Dessiner le corps du monstre légèrement à droite
@@ -54,78 +57,22 @@ export default class Player extends ObjectGraphique {
         super.draw(ctx);
     }
 
-    drawVehicule(ctx) {
-        if (this.imageColor.complete && this.image.complete) {
-            this.drawTintedImage(ctx, this.imageColor, this.couleur);
-            ctx.drawImage(this.image, 0, 0, 150, 150);
-        } else {
-            this.imageColor.onload = () => {
-                this.drawTintedImage(ctx, this.imageColor, this.couleur);
-                ctx.drawImage(this.image, 0, 0, this.w, this.h);
-            };
-            this.image.onload = () => {
-                this.drawTintedImage(ctx, this.imageColor, this.couleur);
-                ctx.drawImage(this.image, 0, 0, this.w, this.h);
-            };
-        }
-
-        this.drawRoues(ctx);
-    }
-
-    drawTintedImage(ctx, image, color) {
-        // Créer un canvas hors écran
-        const offCanvas = document.createElement('canvas');
-        const offCtx = offCanvas.getContext('2d');
-        offCanvas.width = this.w;
-        offCanvas.height = this.h;
-
-        // Dessiner l'image sur le canvas hors écran
-        offCtx.drawImage(image, 0, 0, this.w, this.h);
-
-        // Appliquer la teinte
-        offCtx.globalCompositeOperation = 'source-atop';
-        offCtx.fillStyle = color;
-        offCtx.fillRect(0, 0, this.w, this.h);
-
-        // Dessiner l'image teintée sur le canvas principal
-        ctx.drawImage(offCanvas, 0, 0, 150, 150);
-    }
-
-    drawRoues(ctx) {
-        // Dessiner les roues
-        ctx.fillStyle = "black";
-        this.drawCircle(ctx, 126, this.h - 41, 20); // Roue droite
-        this.drawCircle(ctx, this.w - 118.5, this.h - 41, 20); // Roue gauche
-
-        // Dessiner les jantes
-        ctx.fillStyle = "grey";
-        this.drawCircle(ctx, 126, this.h - 41, 10); // Jante droite
-        this.drawCircle(ctx, this.w - 118.5, this.h - 41, 10); // Jante gauche            
-    }
-
-    // Méthode pour dessiner un cercle
-    drawCircle(ctx, x, y, radius) {
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-    }
-
     drawBody(ctx) {
-        // tete du monstre
-        ctx.fillStyle = "brown";
+        // BONNE PRATIQUE : on sauvegarde le contexte
+        ctx.save();
+
         // tete
-        this.drawCircle(ctx, 30, 25, 22);
+        drawCircleImmediat(ctx, 30, 25, 22, "brown");
 
         // yeux
         this.drawEyes(ctx);
 
         //nez
-        this.drawCircle(ctx, 52, 32, 10);
-        this.drawCircle(ctx, 67, 32, 8);
-        this.drawCircle(ctx, 77, 32, 5);
+        drawCircleImmediat(ctx, 52, 32, 10, "brown");
+        drawCircleImmediat(ctx, 67, 32, 8, "brown");
+        drawCircleImmediat(ctx, 77, 32, 5, "brown");
         ctx.fillStyle = "black";
-        this.drawCircle(ctx, 87, 32, 6);
-
+        drawCircleImmediat(ctx, 87, 32, 6, "black");
 
         ctx.fillStyle = "brown";
         // Corps du monstre (triangle équilateral avec bords arrondis, encore plus élargi)
@@ -154,15 +101,22 @@ export default class Player extends ObjectGraphique {
 
         // Bras du monstre
         this.drawBras(ctx, 40, 50, 35, 5, 3);
+
+        // BONNE PRATIQUE : on restore le contexte à la fin
+        ctx.restore();
     }
 
     drawEyes(ctx) {
+        ctx.save();
+
         drawCircleImmediat(ctx, 35, 19.2, 8, "white");
         drawCircleImmediat(ctx, 46.8, 19.2, 5, "white");
 
         // pupille
         drawCircleImmediat(ctx, 37, 19.2, 2.5, "black");
         drawCircleImmediat(ctx, 47.8, 19.2, 2.5, "black");
+
+        ctx.restore();
     }
 
     // Méthode pour dessiner un bras (rectangle avec des angles arrondis)
@@ -188,6 +142,7 @@ export default class Player extends ObjectGraphique {
 
     // Méthode pour dessiner un rectangle avec des angles arrondis
     drawPied(ctx, x, y, width, height, radius) {
+        ctx.save();
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
         ctx.lineTo(x + width - radius, y);
@@ -200,6 +155,7 @@ export default class Player extends ObjectGraphique {
         ctx.quadraticCurveTo(x, y, x + radius, y);
         ctx.closePath();
         ctx.fill();
+        ctx.restore();
     }
 
     initFlameAnimation() {
@@ -223,7 +179,6 @@ export default class Player extends ObjectGraphique {
 
         // Dessiner l'animation du GIF
         ctx.drawImage(this.flameCanvas, -flameWidth / 2, -flameHeight / 2, flameWidth, flameHeight);
-
         ctx.restore();
     }
 
