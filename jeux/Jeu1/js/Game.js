@@ -22,7 +22,7 @@ export default class Game {
         this.menu = new Menu(canvas, this); // Initialiser le menu avec référence au jeu
     }
 
-    async init(canvas) {
+    async init() {
         this.ctx = this.canvas.getContext("2d");
 
         this.player = new Player(500, 100); // Le joueur démarre à 500px de la gauche
@@ -87,6 +87,9 @@ export default class Game {
         // 2 - on dessine les objets à animer dans le jeu
         // ici on dessine le monstre
         this.drawAllObjects();
+
+        // Dessiner l'icône de pause
+        this.menu.drawPauseIcon();
 
         // Dessiner la jauge de boost
         this.drawBoostGauge();

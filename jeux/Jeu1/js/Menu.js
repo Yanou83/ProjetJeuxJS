@@ -17,7 +17,6 @@ export default class Menu {
     }
 
     showPauseMenu() {
-        // BONNE PRATIQUE : on sauvegarde le contexte
         this.ctx.save();
 
         // Dessiner un fond semi-transparent
@@ -31,12 +30,30 @@ export default class Menu {
         this.ctx.fillText("Pause", this.canvas.width / 2, this.canvas.height / 2 - 20);
         this.ctx.fillText("Appuyez sur Echap pour reprendre", this.canvas.width / 2, this.canvas.height / 2 + 20);
 
-        // BONNE PRATIQUE : on restore le contexte à la fin
         this.ctx.restore();
     }
 
     hidePauseMenu() {
         // Effacer le canvas pour enlever le menu de pause
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    // Icone de pause
+    drawPauseIcon() {
+        const iconSize = 50;
+        this.ctx.save();
+        this.ctx.fillStyle = "black";
+        this.ctx.fillRect(10, 10, iconSize, iconSize);
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(23.5, 20.5, 8, 30);
+        this.ctx.fillRect(38.5, 20.5, 8, 30);
+        this.ctx.restore();
+    }
+
+    handlePauseIconClick(x, y) {
+        const iconSize = 50;
+        if (x >= 10 && x <= 10 + iconSize && y >= 10 && y <= 10 + iconSize) {
+            this.togglePause();
+        }
     }
 }

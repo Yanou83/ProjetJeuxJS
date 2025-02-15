@@ -27,6 +27,13 @@ function initListeners(inputStates, canvas, menu) {
         inputStates.mouseX = event.clientX - canvas.getBoundingClientRect().left;
         inputStates.mouseY = event.clientY - canvas.getBoundingClientRect().top;
     }
+
+    canvas.addEventListener('click', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        menu.handlePauseIconClick(x, y);
+    });
 }
 
 export { initListeners };
