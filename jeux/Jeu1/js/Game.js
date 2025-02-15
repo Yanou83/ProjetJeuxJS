@@ -6,8 +6,10 @@ import Menu from "./Menu.js";
 
 export default class Game {
     objetsGraphiques = [];
+    bonuses = []; // Tableau pour gérer les bonus
     transitionState = false;
     transitionComplete = false;
+    score = 0;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -25,7 +27,7 @@ export default class Game {
     async init() {
         this.ctx = this.canvas.getContext("2d");
 
-        this.player = new Player(500, 100); // Le joueur démarre à 500px de la gauche
+        this.player = new Player(400, 100); // Le joueur démarre à 500px de la gauche
         this.objetsGraphiques.push(this.player);
 
         // Un objet qui suit la souris, juste pour tester
@@ -66,20 +68,31 @@ export default class Game {
                 template.couleur
             );
             this.objetsGraphiques.push(plateforme);
+            this.bonuses.push(plateforme.bonus); // Ajoute uniquement dans this.bonuses
         }
     }
 
     start() {
         console.log("Game démarré");
+        this.lastFrameTime = 0;
+        this.frameDuration = 1000 / 90; // 90 FPS
 
-        // On démarre une animation à 60 images par seconde
+        // On démarre une animation à 90 images par seconde
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
-    mainAnimationLoop() {
+    mainAnimationLoop(timestamp) {
         if (this.menu.isPaused) {
             return; // Ne pas continuer l'animation si le jeu est en pause
         }
+
+        const deltaTime = timestamp - this.lastFrameTime;
+        if (deltaTime < this.frameDuration) {
+            requestAnimationFrame(this.mainAnimationLoop.bind(this));
+            return;
+        }
+
+        this.lastFrameTime = timestamp;
 
         // 1 - on efface le canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -99,6 +112,9 @@ export default class Game {
             this.player.drawFlames(this.ctx);
         }
 
+        // Dessiner le score
+        this.drawScore();
+
         // 3 - On regarde l'état du clavier, manette, souris et on met à jour
         // l'état des objets du jeu en conséquence
         this.update();
@@ -108,6 +124,16 @@ export default class Game {
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
+    // Dessine le score du joueur
+    drawScore() {
+        this.ctx.save();
+        this.ctx.fillStyle = "black";
+        this.ctx.font = "20px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText(`Score: ${this.score}`, this.canvas.width / 2, 30);
+        this.ctx.restore();
+    }
+
     resumeGame() {
         // Reprendre l'animation si le jeu n'est plus en pause
         this.mainAnimationLoop();
@@ -115,9 +141,8 @@ export default class Game {
 
     drawAllObjects() {
         // Dessine tous les objets du jeu
-        this.objetsGraphiques.forEach(obj => {
-            obj.draw(this.ctx);
-        });
+        this.objetsGraphiques.forEach(obj => obj.draw(this.ctx));
+        this.bonuses.forEach(bonus => bonus.draw(this.ctx)); // Dessine les bonus
     }
 
     drawBoostGauge() {
@@ -142,7 +167,7 @@ export default class Game {
 
     update() {
         // Appelée par mainAnimationLoop
-        // donc tous les 1/60 de seconde
+        // donc tous les 1/90 de seconde
 
         // Déplacement du joueur. 
         this.movePlayer();
@@ -156,13 +181,45 @@ export default class Game {
         this.objetSouris.x = this.inputStates.mouseX;
         this.objetSouris.y = this.inputStates.mouseY;
 
+        // Vérifier les collisions avec les bonus
+        this.checkBonusCollisions();
+
         // On regarde si le joueur a atteint la sortie
         // TODO
 
     }
 
-    movePlayer() {
+    // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
+    checkBonusCollisions() {
+        this.bonuses = this.bonuses.filter(bonus => {
+            const playerLeft = this.player.x - this.player.w / 2;
+            const playerRight = this.player.x + this.player.w / 2;
+            const playerTop = this.player.y - this.player.h / 2;
+            const playerBottom = this.player.y + this.player.h / 2;
 
+            const bonusLeft = bonus.x;
+            const bonusRight = bonus.x + bonus.size;
+            const bonusTop = bonus.y;
+            const bonusBottom = bonus.y + bonus.size;
+
+            const isColliding = playerRight > bonusLeft && playerLeft < bonusRight && playerBottom > bonusTop && playerTop < bonusBottom;
+
+            if (isColliding) {
+                this.score += bonus.type === 'green' ? 1 : 3;
+
+                const plateforme = this.objetsGraphiques.find(obj => obj instanceof Plateforme && obj.bonus === bonus);
+                if (plateforme) {
+                    plateforme.bonus = null; // Supprime le bonus de la plateforme
+                }
+                return false; // Supprime le bonus du tableau
+            }
+            return true;
+        });
+    }
+
+
+    // Gestion du déplacement du joueur
+    movePlayer() {
         // Saut
         this.handleJump();
         // Action inclinaison quand la moto s'apprête à tomber
@@ -216,6 +273,7 @@ export default class Game {
         }
     }
 
+    // Gestion du déplacement des plateformes
     movePlatforms() {
         let targetSpeed = 10; // Vitesse normale des plateformes
 
@@ -230,18 +288,18 @@ export default class Game {
 
         // Smooth transition pour le boost
         if (this.boostActive) {
-            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.1; // Smoothly augmentation vitesse
+            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.1; // Douce augmentation de la vitesse
         } else {
-            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.05; // Smoothly diminution vitesse
+            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.05; // Douce diminution de la vitesse
         }
 
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof Plateforme) {
-                obj.x -= this.currentSpeed; // Déplacer la plateforme vers la gauche
+                obj.move(-this.currentSpeed);
 
-                // Réinitialiser la position de la plateforme si elle sort de l'écran
                 if (obj.x + obj.largeurBarre / 2 < 0) {
                     obj.x = this.canvas.width + obj.largeurBarre / 2;
+                    if (obj.bonus) obj.bonus.x = obj.x;
                 }
             }
         });
