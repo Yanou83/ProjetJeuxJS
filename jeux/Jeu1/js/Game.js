@@ -2,6 +2,7 @@ import Player from "./Player.js";
 import Plateforme from "./Plateforme.js";
 import ObjetSouris from "./ObjetSouris.js";
 import { initListeners } from "./ecouteurs.js";
+import Menu from "./Menu.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -18,6 +19,7 @@ export default class Game {
         this.boost = 100; // Valeur initiale du boost
         this.boostActive = false; // Tracker si le boost est actif
         this.currentSpeed = 10; // Vitesse actuelle des plateformes
+        this.menu = new Menu(canvas, this); // Initialiser le menu avec référence au jeu
     }
 
     async init(canvas) {
@@ -34,7 +36,7 @@ export default class Game {
         this.generatePlatforms();
 
         // On initialise les écouteurs de touches, souris, etc.
-        initListeners(this.inputStates, this.canvas);
+        initListeners(this.inputStates, this.canvas, this.menu);
 
         console.log("Game initialisé");
     }
@@ -75,6 +77,10 @@ export default class Game {
     }
 
     mainAnimationLoop() {
+        if (this.menu.isPaused) {
+            return; // Ne pas continuer l'animation si le jeu est en pause
+        }
+
         // 1 - on efface le canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -97,6 +103,11 @@ export default class Game {
         // 4 - on demande au navigateur d'appeler la fonction mainAnimationLoop
         // à nouveau dans 1/60 de seconde
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
+    }
+
+    resumeGame() {
+        // Reprendre l'animation si le jeu n'est plus en pause
+        this.mainAnimationLoop();
     }
 
     drawAllObjects() {
@@ -148,6 +159,9 @@ export default class Game {
     }
 
     movePlayer() {
+
+        // Saut
+        this.handleJump();
         // Action inclinaison quand la moto s'apprête à tomber
         if (this.transitionState && !this.transitionComplete) {
             // Si l'angle est inférieur à la limite de 60% (36 degrés), continuer à incliner
@@ -161,14 +175,14 @@ export default class Game {
                 this.player.y += 200; // Glisse de 10 pixels vers la droite
                 this.transitionComplete = true; // Marque la transition comme terminée
             }
-    
+
             // Une fois la transition complète, on déclenche la chute
             if (this.transitionComplete) {
                 this.player.vitesseY = 10; // Déclenche la chute
             }
         } else {
             this.player.vitesseX = 0; // Empêche le joueur d'avancer ou de reculer
-    
+
             // Autorise le saut si on est sur une plateforme ou au sol
             if (this.inputStates.Space && (this.estSurPlateforme || this.player.y >= this.canvas.height - this.player.h / 2)) {
                 this.player.vitesseY = -20; // Augmenter la hauteur de saut
@@ -181,13 +195,24 @@ export default class Game {
                 this.player.y = this.canvas.height - this.player.h / 2;
                 this.player.angle = 0; // Réinitialiser l'angle à l'atterrissage
             }
-    
+
             this.player.move();
         }
-    
+
         this.testCollisionsPlayer();
     }
-    
+
+    // Gestion du saut
+    handleJump() {
+        if (this.inputStates.Space && (this.estSurPlateforme || this.player.y >= this.canvas.height - this.player.h / 2)) {
+            this.player.vitesseY = -20;
+            this.player.vitesseX = 10;
+            this.player.angle = 0;
+        } else if (!this.inputStates.Space && this.player.vitesseY < 0) {
+            this.player.vitesseY *= 0.8;
+        }
+    }
+
     movePlatforms() {
         let targetSpeed = 10; // Vitesse normale des plateformes
 
@@ -295,7 +320,7 @@ export default class Game {
                     } else {
                         let maxInclinaison = Math.PI / 5; // Limite l'angle à environ 36 degrés (~60% de bascule)
                         this.player.angle = ((0.8 - overlapPercentage) / 0.8) * maxInclinaison;
-                    
+
                         // Si l'inclinaison dépasse 77 %, déclencher le glissement
                         if ((1 - overlapPercentage) > 0.77 && !this.transitionComplete) {
                             this.transitionState = true;

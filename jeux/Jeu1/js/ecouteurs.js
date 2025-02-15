@@ -1,4 +1,4 @@
-function initListeners(inputStates, canvas) {
+function initListeners(inputStates, canvas, menu) {
     window.onkeydown = (event) => {
         console.log("Touche pressée : " + event.key);
         if(event.key === " ") {
@@ -6,7 +6,10 @@ function initListeners(inputStates, canvas) {
         }
         if(event.key === "f" || event.key === "F") {
             inputStates.F = true;
-        }        
+        }
+        if(event.key === "Escape") {
+            menu.togglePause();
+        }
     }
 
     window.onkeyup = (event) => {

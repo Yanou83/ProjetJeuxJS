@@ -50,7 +50,8 @@ export default class Player extends ObjectGraphique {
         ctx.rotate(this.angle);
         ctx.strokeStyle = "red";
         ctx.lineWidth = 2;
-        ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
+        // Ajuster la hitbox pour inclure uniquement la partie basse
+        ctx.strokeRect(-this.w / 2,  -this.h / 2, this.w, this.h);
         ctx.restore();
 
         // super.draw() pour debug
