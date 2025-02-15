@@ -145,6 +145,7 @@ export default class Game {
         this.bonuses.forEach(bonus => bonus.draw(this.ctx)); // Dessine les bonus
     }
 
+    // Dessine la jauge de boost
     drawBoostGauge() {
         const gaugeWidth = 200;
         const gaugeHeight = 20;
@@ -165,6 +166,13 @@ export default class Game {
         this.ctx.strokeRect(x, y, gaugeWidth, gaugeHeight);
     }
 
+    // Regénère la jauge de boost
+    regenerateBoost() {
+        if (!this.boostActive && this.boost < 100) {
+            this.boost += 0.1; 
+        }
+    }
+
     update() {
         // Appelée par mainAnimationLoop
         // donc tous les 1/90 de seconde
@@ -183,6 +191,9 @@ export default class Game {
 
         // Vérifier les collisions avec les bonus
         this.checkBonusCollisions();
+
+        // Regénère la jauge de boost
+        this.regenerateBoost();
 
         // On regarde si le joueur a atteint la sortie
         // TODO
@@ -332,10 +343,11 @@ export default class Game {
             this.player.vitesseY = 0;
         }
 
-        if (this.player.y + this.player.h / 2 > this.canvas.height) {
-            this.player.vitesseY = 0;
-            this.player.y = this.canvas.height - this.player.h / 2;
-        }
+        // Remove collision detection for the bottom of the canvas
+        // if (this.player.y + this.player.h / 2 > this.canvas.height) {
+        //     this.player.vitesseY = 0;
+        //     this.player.y = this.canvas.height - this.player.h / 2;
+        // }
     }
 
     testCollisionPlayerPlateformes() {

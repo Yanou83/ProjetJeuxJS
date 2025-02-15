@@ -61,4 +61,17 @@ function drawGrid(ctx, canvas, nbLignes, nbColonnes, couleur, largeurLignes) {
     ctx.restore();
 }
 
-export { drawCircleImmediat, drawGrid };
+// Enregistre dans localStorage le meilleur score
+function saveBestScore(score) {
+    const bestScore = getBestScore();
+    if (score > bestScore) {
+        localStorage.setItem('Record', score);
+    }
+}
+
+// Récupérer le meilleur score dans localStorage
+function getBestScore() {
+    return parseInt(localStorage.getItem('Record')) || 0;
+}
+
+export { drawCircleImmediat, drawGrid, saveBestScore, getBestScore };
