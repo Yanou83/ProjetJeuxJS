@@ -75,9 +75,9 @@ export default class Game {
     start() {
         console.log("Game démarré");
         this.lastFrameTime = 0;
-        this.frameDuration = 1000 / 90; // 90 FPS
+        this.frameDuration = 1000 / 120; // 120 FPS
 
-        // On démarre une animation à 90 images par seconde
+        // On démarre une animation à 120 images par seconde
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
