@@ -7,12 +7,15 @@ import Menu from "./Menu.js";
 export default class Game {
     objetsGraphiques = [];
     bonuses = []; // Tableau pour gérer les bonus
+    isMovementBlocked = false;  // Contrôle si le mouvement du joueur doit être bloqué
     transitionState = false;
     transitionComplete = false;
     score = 0;
+    deltaTime = 0;
 
     constructor(canvas) {
         this.canvas = canvas;
+        this.isMovementBlocked = false;
         // état du clavier
         this.inputStates = {
             mouseX: 0,
@@ -86,11 +89,13 @@ export default class Game {
             return; // Ne pas continuer l'animation si le jeu est en pause
         }
 
-        const deltaTime = timestamp - this.lastFrameTime;
-        if (deltaTime < this.frameDuration) {
+        const frameTime = timestamp - this.lastFrameTime;
+        if (frameTime < this.frameDuration) {
             requestAnimationFrame(this.mainAnimationLoop.bind(this));
             return;
         }
+
+        this.deltaTime = frameTime / 1000; // Convertir en secondes
 
         this.lastFrameTime = timestamp;
 
@@ -169,7 +174,7 @@ export default class Game {
     // Regénère la jauge de boost
     regenerateBoost() {
         if (!this.boostActive && this.boost < 100) {
-            this.boost += 0.1; 
+            this.boost += 0.1;
         }
     }
 
@@ -194,10 +199,6 @@ export default class Game {
 
         // Regénère la jauge de boost
         this.regenerateBoost();
-
-        // On regarde si le joueur a atteint la sortie
-        // TODO
-
     }
 
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
@@ -231,40 +232,53 @@ export default class Game {
 
     // Gestion du déplacement du joueur
     movePlayer() {
+        if (this.isMovementBlocked) {
+            return;  // Arrête la mise à jour du mouvement si bloqué
+        }
+
         // Saut
         this.handleJump();
+
+        if (this.player.y + this.player.h / 2 > this.canvas.height) {
+            // Ajouter une condition pour vérifier l'état de transition
+            if (this.transitionState && !this.transitionComplete) {
+                // Permettre une certaine flexibilité pendant la transition
+                this.player.y = Math.min(this.player.y, this.canvas.height - this.player.h / 2);
+            } else {
+                // Bloquer les mouvements uniquement si la transition est complète ou inexistante
+                this.isMovementBlocked = true;
+                this.player.y = 1000;
+            }
+        }
         // Action inclinaison quand la moto s'apprête à tomber
         if (this.transitionState && !this.transitionComplete) {
-            // Si l'angle est inférieur à la limite de 60% (36 degrés), continuer à incliner
-            if (this.player.angle < Math.PI / 5) {
-                this.player.angle += 0.05; // Augmente progressivement l'angle
-                this.player.x += 2; // Déplacement latéral léger pendant l'inclinaison
+            if (this.player.angle < Math.PI / 5) {  // Si l'angle est inférieur à la limite de 60% (36 degrés), continuer à incliner
+                this.player.angle += 0.05;  // Augmente progressivement l'angle
+                this.player.x += 2;  // Déplacement latéral léger pendant l'inclinaison
                 this.player.vitesseX = 2;
             } else {
-                // Glissement avant la chute
-                this.player.x += 10; // Glisse de 10 pixels vers la droite
-                this.player.y += 200; // Glisse de 10 pixels vers la droite
-                this.transitionComplete = true; // Marque la transition comme terminée
+                this.player.x += 10;  // Glissement avant la chute
+                // Calculer la nouvelle position y sans dépasser le bas du canvas
+                let newY = Math.min(this.canvas.height - this.player.h / 2, this.player.y + 200);
+                this.player.y = newY;  // Applique la nouvelle position y
+                this.transitionComplete = true;  // Marque la transition comme terminée
             }
+            
 
-            // Une fois la transition complète, on déclenche la chute
             if (this.transitionComplete) {
-                this.player.vitesseY = 10; // Déclenche la chute
+                this.player.vitesseY = 10;  // Déclenche la chute
             }
         } else {
-            this.player.vitesseX = 0; // Empêche le joueur d'avancer ou de reculer
+            this.player.vitesseX = 0;  // Empêche le joueur d'avancer ou de reculer
 
-            // Autorise le saut si on est sur une plateforme ou au sol
-            if (this.inputStates.Space && (this.estSurPlateforme || this.player.y >= this.canvas.height - this.player.h / 2)) {
-                this.player.vitesseY = -20; // Augmenter la hauteur de saut
-                this.player.vitesseX = 10; // Augmenter la distance de saut en longueur
-                this.player.angle = 0; // Réinitialiser l'angle en sautant
-            } else if (this.player.y < this.canvas.height - this.player.h / 2) {
-                this.player.vitesseY += 1; // Appliquer la gravité
+            if (this.inputStates.Space && this.estSurPlateforme && (this.player.y + this.player.h / 2 >= this.canvas.height)) {
+                this.player.vitesseY = -20;  // Augmenter la hauteur de saut
+                this.player.vitesseX = 10;  // Augmenter la distance de saut en longueur
+                this.player.angle = 0;  // Réinitialiser l'angle en sautant
             } else {
-                this.player.vitesseY = 0;
-                this.player.y = this.canvas.height - this.player.h / 2;
-                this.player.angle = 0; // Réinitialiser l'angle à l'atterrissage
+                if (!this.estSurPlateforme) {  // Si pas sur une plateforme, appliquer la gravité
+                    this.player.vitesseY += 1;
+                }
             }
 
             this.player.move();
@@ -273,9 +287,10 @@ export default class Game {
         this.testCollisionsPlayer();
     }
 
+
     // Gestion du saut
     handleJump() {
-        if (this.inputStates.Space && (this.estSurPlateforme || this.player.y >= this.canvas.height - this.player.h / 2)) {
+        if (this.inputStates.Space && (this.estSurPlateforme)) {
             this.player.vitesseY = -20;
             this.player.vitesseX = 10;
             this.player.angle = 0;
@@ -342,13 +357,8 @@ export default class Game {
             this.player.y = this.player.h / 2;
             this.player.vitesseY = 0;
         }
-
-        // Remove collision detection for the bottom of the canvas
-        // if (this.player.y + this.player.h / 2 > this.canvas.height) {
-        //     this.player.vitesseY = 0;
-        //     this.player.y = this.canvas.height - this.player.h / 2;
-        // }
     }
+
 
     testCollisionPlayerPlateformes() {
         let estSurPlateformeTemp = false;
