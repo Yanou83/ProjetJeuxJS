@@ -4,13 +4,13 @@ import Vehicule from "./Vehicule.js";
 
 export default class Player extends ObjectGraphique {
     constructor(x, y) {
-        super(x, y, 150, 150); 
+        super(x, y, 150, 150);
         this.vitesseX = 0;
         this.vitesseY = 0;
         this.couleur = "green";
         this.angle = 0;
         this.vehicule = new Vehicule(this.couleur);
-        this.flameImageSrc = "../images/feu_boost.gif"; 
+        this.flameImageSrc = "/jeux/images/feu_boost.gif";
         this.flameAnimation = null;
         this.flameCanvas = document.createElement('canvas');
         this.flameCanvas.width = 40;
@@ -51,7 +51,7 @@ export default class Player extends ObjectGraphique {
         ctx.strokeStyle = "red";
         ctx.lineWidth = 2;
         // Ajuster la hitbox pour inclure uniquement la partie basse
-        ctx.strokeRect(-this.w / 2,  -this.h / 2, this.w, this.h);
+        ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
         ctx.restore();
 
         // super.draw() pour debug
@@ -169,9 +169,9 @@ export default class Player extends ObjectGraphique {
     drawFlames(ctx) {
         if (!this.flameAnimation) return; // Si l'animation n'est pas chargée, on ne fait rien
 
-        const flameWidth = 40; 
-        const flameHeight = 100; 
-        const flameX = this.x - this.w / 2 - flameWidth - 10; 
+        const flameWidth = 40;
+        const flameHeight = 100;
+        const flameX = this.x - this.w / 2 - flameWidth - 10;
         const flameY = this.y + this.h / 2 - flameHeight + 70;
 
         ctx.save();

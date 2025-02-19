@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startJeuButton.addEventListener('click', () => {
         if (firstSmallImage.classList.contains('active')) {
-            window.location.href = 'jeux/Jeu1/Jeu1.html';
+            window.location.href = '/jeu1';
         }
     });
 });
@@ -72,6 +72,6 @@ function handleAuthButtonClick() {
         sessionStorage.removeItem('isAuthenticated');
         window.location.reload();
     } else {
-        window.location.href = '../../pages/connexion.html';
+        window.location.href = '/login';
     }
 }

@@ -4,9 +4,9 @@ export default class Vehicule {
     constructor(couleur) {
         this.couleur = couleur;
         this.imageColor = new Image();
-        this.imageColor.src = "../images/scootercolor.png"; 
+        this.imageColor.src = "/jeux/images/scootercolor.png"; 
         this.image = new Image();
-        this.image.src = "../images/scooter.png"; 
+        this.image.src = "/jeux/images/scooter.png"; 
     }
 
     load() {

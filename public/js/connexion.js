@@ -77,7 +77,7 @@ function handleLogin(event) {
         sessionStorage.setItem('isAuthenticated', 'true');
         showNotification("Connexion réussie !", "success");
         setTimeout(() => {
-            window.location.href = '../../index.html';
+            window.location.href = '/';
         }, 1000);
     } else {
         showNotification("Email ou mot de passe incorrect.", "error");
