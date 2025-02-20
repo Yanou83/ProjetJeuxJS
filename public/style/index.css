@@ -176,6 +176,11 @@ header nav .right button:hover {
     width: 120px;
 }
 
+#noGameSelected {
+    margin-top: 15px;
+    margin-bottom: -10px;
+}
+
 
 .small.active {
     outline: 4px solid green;
