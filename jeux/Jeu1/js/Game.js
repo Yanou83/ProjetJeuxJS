@@ -11,7 +11,8 @@ export default class Game {
     transitionState = false;
     transitionComplete = false;
     score = 0;
-    deltaTime = 0;
+    boostSpeed = 0; // Variable to track the current boost speed
+
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -25,6 +26,14 @@ export default class Game {
         this.boostActive = false; // Tracker si le boost est actif
         this.currentSpeed = 10; // Vitesse actuelle des plateformes
         this.menu = new Menu(canvas, this); // Initialiser le menu avec référence au jeu
+        this.maxSpeed = 20; // Vitesse maximale
+        this.speedIncreaseRate = 0.005; // Facteur d'accélération 
+        this.elapsedTime = 0; // Temps écoulé en jeu en secondes 
+
+        this.baseSpacing = 500; // Espacement initial
+        this.minSpacing = 600; // Espacement minimal
+        this.maxSpacing = 1000; // Espacement maximal pour éviter un jeu trop dur
+        this.spacingIncreaseRate = 0.2; // Augmentation progressive de l'espacement
     }
 
     async init() {
@@ -39,6 +48,11 @@ export default class Game {
 
         // Générer les plateformes automatiquement
         this.generatePlatforms();
+
+        // Répéter la génération de plateformes toutes les 5 secondes
+        setInterval(() => {
+            this.generatePlatforms();
+        }, 1000);
 
         // On initialise les écouteurs de touches, souris, etc.
         initListeners(this.inputStates, this.canvas, this.menu);
@@ -56,12 +70,25 @@ export default class Game {
         const platformTemplates = [
             { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200, couleur: "red" },
             { y: 500, largeurBarre: 10, hauteurBarre: 225, longueurBarre: 200, couleur: "blue" },
-            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurBarre: 200, couleur: "yellow" }
+            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurBarre: 200, couleur: "yellow" },
+            { y: 400, largeurBarre: 10, hauteurBarre: 300, longueurBarre: 250, couleur: "green" },
+            { y: 450, largeurBarre: 10, hauteurBarre: 275, longueurBarre: 220, couleur: "purple" },
+            { y: 480, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 190, couleur: "orange" }
         ];
 
-        for (let i = 0; i < 3; i++) {
+        let lastPlatform = this.objetsGraphiques
+            .filter(obj => obj instanceof Plateforme)
+            .reduce((last, current) => (current.x > last.x ? current : last), { x: 200 });
+
+        // Augmentation progressive de l’espacement, limité à `maxSpacing`
+        this.baseSpacing = Math.min(this.maxSpacing, this.baseSpacing + this.spacingIncreaseRate);
+
+        let startX = lastPlatform.x + this.baseSpacing;
+
+        for (let i = 0; i < 10; i++) {
             const template = platformTemplates[Math.floor(Math.random() * platformTemplates.length)];
-            const xPosition = 200 + i * 400 + Math.floor(Math.random() * 200); // Positionner aléatoirement avec un décalage de 200 pixels
+            const xPosition = startX + i * this.baseSpacing + Math.floor(Math.random() * 100 - 50);
+
             const plateforme = new Plateforme(
                 xPosition,
                 template.y,
@@ -70,10 +97,36 @@ export default class Game {
                 template.longueurBarre,
                 template.couleur
             );
+
             this.objetsGraphiques.push(plateforme);
-            this.bonuses.push(plateforme.bonus); // Ajoute uniquement dans this.bonuses
+            this.bonuses.push(plateforme.bonus);
         }
     }
+
+
+    checkAndGeneratePlatforms() {
+        // Vérifier si le joueur atteint la 5ᵉ plateforme
+        const plateformeActuelle = this.objetsGraphiques
+            .filter(p => p instanceof Plateforme)
+            .find(p => this.player.x > p.x && this.player.x < p.x + p.longueurBarre);
+
+        if (plateformeActuelle) {
+            const indexPlateforme = this.objetsGraphiques.indexOf(plateformeActuelle);
+
+            if (indexPlateforme >= 5 && !this.newPlatformsAdded) {
+                console.log("Ajout de 20 nouvelles plateformes !");
+                this.newPlatformsAdded = true; // Évite d'ajouter en boucle
+
+                this.generatePlatforms(this.objetsGraphiques.length); // Ajoute 20 nouvelles plateformes
+
+                // Réinitialisation après l'ajout
+                setTimeout(() => { this.newPlatformsAdded = false; }, 1000);
+            }
+        }
+    }
+
+
+
 
     start() {
         console.log("Game démarré");
@@ -94,8 +147,6 @@ export default class Game {
             requestAnimationFrame(this.mainAnimationLoop.bind(this));
             return;
         }
-
-        this.deltaTime = frameTime / 1000; // Convertir en secondes
 
         this.lastFrameTime = timestamp;
 
@@ -182,11 +233,21 @@ export default class Game {
         // Appelée par mainAnimationLoop
         // donc tous les 1/90 de seconde
 
+        this.elapsedTime += this.deltaTime; // Suivi du temps de jeu
+
+        // Augmenter progressivement l'espacement des plateformes
+        if (this.baseSpacing < this.maxSpacing) {
+            this.baseSpacing += this.spacingIncreaseRate;
+        }
         // Déplacement du joueur. 
         this.movePlayer();
 
         // Déplacement des plateformes de droite à gauche
         this.movePlatforms();
+
+
+        // Vérifier si de nouvelles plateformes doivent être générées
+        this.checkAndGeneratePlatforms();
 
         // on met à jour la position de objetSouris avec la position de la souris
         // Pour un objet qui "suit" la souris mais avec un temps de retard, voir l'exemple
@@ -263,7 +324,7 @@ export default class Game {
                 this.player.y = newY;  // Applique la nouvelle position y
                 this.transitionComplete = true;  // Marque la transition comme terminée
             }
-            
+
 
             if (this.transitionComplete) {
                 this.player.vitesseY = 10;  // Déclenche la chute
@@ -301,35 +362,37 @@ export default class Game {
 
     // Gestion du déplacement des plateformes
     movePlatforms() {
-        let targetSpeed = 10; // Vitesse normale des plateformes
-
-        // Boost de vitesse si la touche 'F' est pressée et qu'il reste du boost
+        // Augmentation progressive de la vitesse en fonction du temps (linéaire, sans boost)
+        if (!this.boostActive && this.currentSpeed < this.maxSpeed) {
+            this.currentSpeed += this.speedIncreaseRate; // Progression naturelle
+        }
+    
+        let targetBoostSpeed = 0; // Vitesse supplémentaire uniquement pour le boost
+    
+        // Gestion du boost (temporaire, n'affecte pas la progression normale)
         if (this.inputStates.F && this.boost > 0) {
-            targetSpeed = 20; // Double la vitesse des plateformes
-            this.boost -= 1; // Réduit la jauge de boost
+            targetBoostSpeed = 10; // La vitesse supplémentaire temporaire due au boost
+            this.boost -= 0.5; // Décrémente progressivement le boost
             this.boostActive = true;
         } else {
             this.boostActive = false;
         }
-
-        // Smooth transition pour le boost
-        if (this.boostActive) {
-            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.1; // Douce augmentation de la vitesse
-        } else {
-            this.currentSpeed += (targetSpeed - this.currentSpeed) * 0.05; // Douce diminution de la vitesse
-        }
-
+    
+        // Transition fluide du boost (smooth start & end)
+        this.boostSpeed += (targetBoostSpeed - this.boostSpeed) * 0.1;
+    
+        // Vitesse finale appliquée aux plateformes = vitesse normale + boost fluide
+        let effectiveSpeed = this.currentSpeed + this.boostSpeed;
+    
+        // Appliquer la vitesse aux plateformes
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof Plateforme) {
-                obj.move(-this.currentSpeed);
-
-                if (obj.x + obj.largeurBarre / 2 < 0) {
-                    obj.x = this.canvas.width + obj.largeurBarre / 2;
-                    if (obj.bonus) obj.bonus.x = obj.x;
-                }
+                obj.move(-effectiveSpeed);
             }
         });
     }
+    
+
 
     testCollisionsPlayer() {
         // Teste collision avec les bords du canvas
