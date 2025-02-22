@@ -166,6 +166,12 @@ header nav .right button:hover {
     margin: 0 15px 15px 0;
     border-radius: 20px;
     transition: filter 0.5s;
+    width: 100px; 
+    height: 100px; 
+    overflow: hidden; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .first .product-presentation .small-images .small:hover {
@@ -173,7 +179,9 @@ header nav .right button:hover {
 }
 
 .first .product-presentation .small-images .small img {
-    width: 120px;
+    width: 110px; 
+    height: 110px; 
+    object-fit: cover; 
 }
 
 #noGameSelected {

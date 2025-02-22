@@ -1,6 +1,5 @@
 function initListeners(inputStates, canvas, menu) {
     window.onkeydown = (event) => {
-        console.log("Touche pressée : " + event.key);
         if(event.key === " ") {
             inputStates.Space = true;
         }
@@ -13,7 +12,6 @@ function initListeners(inputStates, canvas, menu) {
     }
 
     window.onkeyup = (event) => {
-        console.log("Touche relachée : " + event.key);
         if(event.key === " ") {
             inputStates.Space = false;
         }

@@ -12,6 +12,7 @@ export default class Game {
     transitionComplete = false;
     score = 0;
     boostSpeed = 0; // Variable to track the current boost speed
+    fallTimer = null; // Chronomètre pour la chute du joueur
 
 
     constructor(canvas) {
@@ -114,10 +115,9 @@ export default class Game {
             const indexPlateforme = this.objetsGraphiques.indexOf(plateformeActuelle);
 
             if (indexPlateforme >= 5 && !this.newPlatformsAdded) {
-                console.log("Ajout de 20 nouvelles plateformes !");
                 this.newPlatformsAdded = true; // Évite d'ajouter en boucle
 
-                this.generatePlatforms(this.objetsGraphiques.length); // Ajoute 20 nouvelles plateformes
+                this.generatePlatforms(this.objetsGraphiques.length); // Ajoute 10 nouvelles plateformes
 
                 // Réinitialisation après l'ajout
                 setTimeout(() => { this.newPlatformsAdded = false; }, 1000);
@@ -260,6 +260,27 @@ export default class Game {
 
         // Regénère la jauge de boost
         this.regenerateBoost();
+
+        // Vérifie si le joueur est tombé de la plateforme
+        this.checkFall();
+    }
+
+    checkFall() {
+        if (!this.estSurPlateforme) {
+            if (!this.fallTimer) {
+                this.fallTimer = setTimeout(() => {
+                    this.gameOver();
+                }, 1700); // 1,5 secondes
+            }
+        } else {
+            clearTimeout(this.fallTimer);
+            this.fallTimer = null;
+        }
+    }
+
+    gameOver() {
+        this.menu.isPaused = true;
+        this.menu.showGameOverMenu(); // Display game over menu
     }
 
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
@@ -366,9 +387,9 @@ export default class Game {
         if (!this.boostActive && this.currentSpeed < this.maxSpeed) {
             this.currentSpeed += this.speedIncreaseRate; // Progression naturelle
         }
-    
+
         let targetBoostSpeed = 0; // Vitesse supplémentaire uniquement pour le boost
-    
+
         // Gestion du boost (temporaire, n'affecte pas la progression normale)
         if (this.inputStates.F && this.boost > 0) {
             targetBoostSpeed = 10; // La vitesse supplémentaire temporaire due au boost
@@ -377,13 +398,13 @@ export default class Game {
         } else {
             this.boostActive = false;
         }
-    
+
         // Transition fluide du boost (smooth start & end)
         this.boostSpeed += (targetBoostSpeed - this.boostSpeed) * 0.1;
-    
+
         // Vitesse finale appliquée aux plateformes = vitesse normale + boost fluide
         let effectiveSpeed = this.currentSpeed + this.boostSpeed;
-    
+
         // Appliquer la vitesse aux plateformes
         this.objetsGraphiques.forEach(obj => {
             if (obj instanceof Plateforme) {
@@ -391,7 +412,7 @@ export default class Game {
             }
         });
     }
-    
+
 
 
     testCollisionsPlayer() {
@@ -474,9 +495,6 @@ export default class Game {
                         }
                     }
 
-
-                    // Logger le % d'inclinaison
-                    console.log(`Inclination percentage: ${(1 - overlapPercentage) * 100}%`);
 
                     // Si inclinaison dépasse 77 %, déclencher le glissement
                     if ((1 - overlapPercentage) > 0.77 && !this.transitionComplete) {

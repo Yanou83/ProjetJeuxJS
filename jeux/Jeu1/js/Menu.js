@@ -56,4 +56,21 @@ export default class Menu {
             this.togglePause();
         }
     }
+
+    showGameOverMenu() {
+        this.ctx.save();
+
+        // Dessiner un fond semi-transparent
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Dessiner le texte du menu de game over
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "30px Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("Game Over", this.canvas.width / 2, this.canvas.height / 2 - 20);
+        this.ctx.fillText("Appuyez sur Echap pour revenir au menu principal", this.canvas.width / 2, this.canvas.height / 2 + 20);
+
+        this.ctx.restore();
+    }
 }
