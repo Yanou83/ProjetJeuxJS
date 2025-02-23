@@ -1,24 +1,52 @@
 import Game from "./Game.js";
+import MainMenu from "./MainMenu.js";
 
 // Bonne pratique : avoir une fonction appelée une fois
 // que la page est prête, que le DOM est chargé, etc.
 window.onload = init;
 
 async function init() {
-   // On recupère le canvas
-   let canvas = document.querySelector("#myCanvas");
+    // On recupère le canvas
+    let canvas = document.querySelector("#myCanvas");
 
-   canvas.width = window.innerWidth - 20;
-   canvas.height = window.innerHeight - 20;
-   // On cree une instance du jeu
-    let game = new Game(canvas);
-    // ici on utilise await car la méthode init est asynchrone
-    // typiquement dans init on charge des images, des sons, etc.
-    await game.init();
+    canvas.width = window.innerWidth - 20;
+    canvas.height = window.innerHeight - 20;
 
-    // Attendre que tous les éléments soient chargés
-    await game.loadAssets();
+    // Créer une instance du menu principal
+    let mainMenu = new MainMenu(canvas, startGame);
 
-    // on peut démarrer le jeu
-    game.start();
+    async function startGame(selectedColor) {
+        // Cacher le menu principal
+        mainMenu.hideMenu();
+
+        // On cree une instance du jeu
+        let game = new Game(canvas, selectedColor);
+
+
+        game.onGameRestart = () => restartGame(selectedColor);
+
+        // ici on utilise await car la méthode init est asynchrone
+        // typiquement dans init on charge des images, des sons, etc.
+        await game.init();
+
+        // Attendre que tous les éléments soient chargés
+        await game.loadAssets();
+
+        // on peut démarrer le jeu
+        game.start();
+    }
+
+    async function restartGame(selectedColor) {
+        // Supprimer le canvas avant de recréer le jeu
+        let ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Créer une nouvelle instance du jeu
+        let newGame = new Game(canvas, selectedColor);
+        newGame.onGameRestart = () => restartGame(selectedColor);
+
+        await newGame.init();
+        await newGame.loadAssets();
+        newGame.start();
+    }
 }

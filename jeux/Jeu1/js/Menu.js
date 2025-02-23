@@ -3,7 +3,9 @@ export default class Menu {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d");
         this.isPaused = false;
-        this.game = game; 
+        this.game = game;
+        this.createPauseMenu();
+        this.createGameOverMenu();
     }
 
     togglePause() {
@@ -12,33 +14,108 @@ export default class Menu {
             this.showPauseMenu();
         } else {
             this.hidePauseMenu();
-            this.game.resumeGame(); // Indique au jeu de reprendre
+            this.game.resumeGame();
         }
     }
 
+    createPauseMenu() {
+        // Fond flouté
+        this.pauseOverlay = document.createElement("div");
+        this.pauseOverlay.id = "pause-menu-overlay";
+
+        // Conteneur du menu pause
+        this.pauseMenuContainer = document.createElement("div");
+        this.pauseMenuContainer.id = "pause-menu";
+
+        // Ajouter un titre "Pause"
+        const title = document.createElement("h1");
+        title.innerText = "Pause";
+        this.pauseMenuContainer.appendChild(title);
+
+        // Séparateur
+        const separator = document.createElement("div");
+        separator.className = "separator";
+        this.pauseMenuContainer.appendChild(separator);
+
+        // Bouton "Reprendre le jeu"
+        const resumeButton = document.createElement("button");
+        resumeButton.innerText = "▶ Reprendre le jeu";
+        resumeButton.onclick = () => this.togglePause();
+        this.pauseMenuContainer.appendChild(resumeButton);
+
+        // Bouton "Retour au menu principal"
+        const mainMenuButton = document.createElement("button");
+        mainMenuButton.innerText = "🏠 Retour menu principal";
+        mainMenuButton.onclick = () => {
+            window.location.reload(); // Recharge la page pour revenir au menu principal
+        };
+        this.pauseMenuContainer.appendChild(mainMenuButton);
+
+        // Ajouter les éléments au DOM
+        this.pauseOverlay.appendChild(this.pauseMenuContainer);
+        document.body.appendChild(this.pauseOverlay);
+    }
+
+
+    createGameOverMenu() {
+        // Fond flouté du menu Game Over
+        this.gameOverOverlay = document.createElement("div");
+        this.gameOverOverlay.id = "game-over-menu-overlay";
+
+        // Conteneur du menu Game Over
+        this.gameOverMenuContainer = document.createElement("div");
+        this.gameOverMenuContainer.id = "game-over-menu";
+
+        // Ajouter un titre "Game Over"
+        const title = document.createElement("h1");
+        title.innerText = "Game Over";
+        this.gameOverMenuContainer.appendChild(title);
+
+        // Séparateur
+        const separator = document.createElement("div");
+        separator.className = "separator";
+        this.gameOverMenuContainer.appendChild(separator);
+
+        // Bouton "Recommencer le jeu"
+        const restartButton = document.createElement("button");
+        restartButton.innerText = "🔄 Recommencer le jeu";
+        restartButton.onclick = () => {
+            this.hideGameOverMenu();
+            this.game.resetGame(); // Appeler la méthode resetGame pour réinitialiser le jeu
+        };
+        this.gameOverMenuContainer.appendChild(restartButton);
+
+        // Bouton "Retour menu principal"
+        const mainMenuButton = document.createElement("button");
+        mainMenuButton.innerText = "🏠 Retour menu principal";
+        mainMenuButton.onclick = () => {
+            window.location.reload();
+        };
+        this.gameOverMenuContainer.appendChild(mainMenuButton);
+
+        // Ajouter au DOM
+        this.gameOverOverlay.appendChild(this.gameOverMenuContainer);
+        document.body.appendChild(this.gameOverOverlay);
+    }
+
+
     showPauseMenu() {
-        this.ctx.save();
-
-        // Dessiner un fond semi-transparent
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Dessiner le texte du menu de pause
-        this.ctx.fillStyle = "white";
-        this.ctx.font = "30px Arial";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("Pause", this.canvas.width / 2, this.canvas.height / 2 - 20);
-        this.ctx.fillText("Appuyez sur Echap pour reprendre", this.canvas.width / 2, this.canvas.height / 2 + 20);
-
-        this.ctx.restore();
+        this.pauseOverlay.classList.add("visible");
     }
 
     hidePauseMenu() {
-        // Effacer le canvas pour enlever le menu de pause
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.pauseOverlay.classList.remove("visible");
     }
 
-    // Icone de pause
+    showGameOverMenu() {
+        this.gameOverOverlay.classList.add("visible");
+    }
+
+    hideGameOverMenu() {
+        this.gameOverOverlay.classList.remove("visible");
+    }
+
+    // Icône de pause
     drawPauseIcon() {
         const iconSize = 50;
         this.ctx.save();
@@ -55,22 +132,5 @@ export default class Menu {
         if (x >= 10 && x <= 10 + iconSize && y >= 10 && y <= 10 + iconSize) {
             this.togglePause();
         }
-    }
-
-    showGameOverMenu() {
-        this.ctx.save();
-
-        // Dessiner un fond semi-transparent
-        this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-        // Dessiner le texte du menu de game over
-        this.ctx.fillStyle = "white";
-        this.ctx.font = "30px Arial";
-        this.ctx.textAlign = "center";
-        this.ctx.fillText("Game Over", this.canvas.width / 2, this.canvas.height / 2 - 20);
-        this.ctx.fillText("Appuyez sur Echap pour revenir au menu principal", this.canvas.width / 2, this.canvas.height / 2 + 20);
-
-        this.ctx.restore();
     }
 }

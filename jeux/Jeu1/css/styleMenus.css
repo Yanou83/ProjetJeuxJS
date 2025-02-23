@@ -1,0 +1,202 @@
+/* Effet de flou en arrière-plan */
+#menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+/* Conteneur du menu */
+#main-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    opacity: 1;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Titre du jeu */
+#main-menu h1 {
+    font-size: 2.8em;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Séparateur */
+.separator {
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(to right, #007BFF, #00C9FF);
+    margin: 10px auto 20px;
+    border-radius: 5px;
+}
+
+/* Canevas du scooter */
+#scooter-preview {
+    margin-top: 10px;
+    background: transparent;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Conteneur des couleurs */
+#color-picker-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+/* Cercles de couleurs */
+.color-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    border: 3px solid white;
+}
+
+.color-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Style des boutons */
+#main-menu button {
+    font-size: 1.3em;
+    padding: 12px 30px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to right, #007BFF, #00C9FF);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+    width: 100%;
+    font-weight: bold;
+}
+
+#main-menu button:hover {
+    background: linear-gradient(to right, #0056b3, #0088cc);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+/* Animation d'apparition */
+#main-menu {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Menu pause & game over*/
+
+/* Effet de flou pour le menu pause */
+#pause-menu-overlay, #game-over-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Conteneur du menu pause et game over */
+#pause-menu, #game-over-menu {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+/* Affichage fluide du menu */
+#pause-menu-overlay.visible, #game-over-menu-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+#pause-menu-overlay.visible #pause-menu,
+#game-over-menu-overlay.visible #game-over-menu {
+    transform: scale(1);
+}
+
+/* Titre */
+#pause-menu h1, #game-over-menu h1 {
+    font-size: 2.8em;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Séparateur */
+.separator {
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(to right, #007BFF, #00C9FF);
+    margin: 10px auto 20px;
+    border-radius: 5px;
+}
+
+/* Style des boutons */
+#pause-menu button, #game-over-menu button {
+    font-size: 1.3em;
+    padding: 12px 30px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(to right, #007BFF, #00C9FF);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
+    display: block;
+    width: 100%;
+    font-weight: bold;
+}
+
+#pause-menu button:hover, #game-over-menu button:hover {
+    background: linear-gradient(to right, #0056b3, #0088cc);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}

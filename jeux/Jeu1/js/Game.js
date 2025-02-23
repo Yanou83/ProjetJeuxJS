@@ -13,9 +13,11 @@ export default class Game {
     score = 0;
     boostSpeed = 0; // Variable to track the current boost speed
     fallTimer = null; // Chronomètre pour la chute du joueur
+    startingPlatformGenerated = false; // Flag to ensure the starting platform is generated only once
+    gameStarted = false; // Flag to check if the game has started
 
 
-    constructor(canvas) {
+    constructor(canvas, selectedColor) {
         this.canvas = canvas;
         this.isMovementBlocked = false;
         // état du clavier
@@ -30,35 +32,45 @@ export default class Game {
         this.maxSpeed = 20; // Vitesse maximale
         this.speedIncreaseRate = 0.005; // Facteur d'accélération 
         this.elapsedTime = 0; // Temps écoulé en jeu en secondes 
+        this.selectedColor = selectedColor;
 
         this.baseSpacing = 500; // Espacement initial
         this.minSpacing = 600; // Espacement minimal
-        this.maxSpacing = 1000; // Espacement maximal pour éviter un jeu trop dur
-        this.spacingIncreaseRate = 0.2; // Augmentation progressive de l'espacement
+        this.maxSpacing = 930; // Espacement maximal pour éviter un jeu trop dur
+        this.spacingIncreaseRate = 1.5; // Augmentation progressive de l'espacement
     }
 
     async init() {
         this.ctx = this.canvas.getContext("2d");
 
-        this.player = new Player(400, 100); // Le joueur démarre à 500px de la gauche
+        this.player = new Player(400, 295, this.selectedColor); // Le joueur démarre à 500px de la gauche
         this.objetsGraphiques.push(this.player);
 
         // Un objet qui suit la souris, juste pour tester
         this.objetSouris = new ObjetSouris(200, 200, 25, 25, "transparent");
         this.objetsGraphiques.push(this.objetSouris);
 
+        // Générer la plateforme de démarrage
+        this.generateStartingPlatform();
+
         // Générer les plateformes automatiquement
         this.generatePlatforms();
 
-        // Répéter la génération de plateformes toutes les 5 secondes
+        // Répéter la génération de plateformes toutes les secondes
         setInterval(() => {
             this.generatePlatforms();
         }, 1000);
 
         // On initialise les écouteurs de touches, souris, etc.
-        initListeners(this.inputStates, this.canvas, this.menu);
+        initListeners(this.inputStates, this.canvas, this.menu, this.startGame.bind(this));
 
         console.log("Game initialisé");
+
+        // Charger tous les assets du jeu avant d'afficher quoi que ce soit
+        await this.loadAssets();
+
+        // Dessiner l'état initial du jeu avant le démarrage
+        this.drawInitialState();
     }
 
     // Charger toutes les assets avant de démarrer le jeu
@@ -67,6 +79,16 @@ export default class Game {
         await Promise.all(promises);
     }
 
+    // Générer plateforme de départ
+    generateStartingPlatform() {
+        if (!this.startingPlatformGenerated) {
+            const startingPlatform = new Plateforme(400, 370, 10, 350, 300, "brown");
+            this.objetsGraphiques.push(startingPlatform);
+            this.startingPlatformGenerated = true;
+        }
+    }
+
+    // Génrer les plateformes
     generatePlatforms() {
         const platformTemplates = [
             { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200, couleur: "red" },
@@ -79,7 +101,7 @@ export default class Game {
 
         let lastPlatform = this.objetsGraphiques
             .filter(obj => obj instanceof Plateforme)
-            .reduce((last, current) => (current.x > last.x ? current : last), { x: 200 });
+            .reduce((last, current) => (current.x > last.x ? current : last), { x: 500 });
 
         // Augmentation progressive de l’espacement, limité à `maxSpacing`
         this.baseSpacing = Math.min(this.maxSpacing, this.baseSpacing + this.spacingIncreaseRate);
@@ -126,8 +148,6 @@ export default class Game {
     }
 
 
-
-
     start() {
         console.log("Game démarré");
         this.lastFrameTime = 0;
@@ -138,8 +158,8 @@ export default class Game {
     }
 
     mainAnimationLoop(timestamp) {
-        if (this.menu.isPaused) {
-            return; // Ne pas continuer l'animation si le jeu est en pause
+        if (this.menu.isPaused || !this.gameStarted) {
+            return; // Ne pas continuer l'animation si le jeu est en pause ou n'a pas démarré
         }
 
         const frameTime = timestamp - this.lastFrameTime;
@@ -154,7 +174,6 @@ export default class Game {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // 2 - on dessine les objets à animer dans le jeu
-        // ici on dessine le monstre
         this.drawAllObjects();
 
         // Dessiner l'icône de pause
@@ -180,6 +199,28 @@ export default class Game {
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
     }
 
+
+    // Dessiner l'état initial du jeu (avant le démarrage)
+    drawInitialState() {
+        if (!this.ctx) return; // Vérifier si le contexte est bien initialisé
+
+        // Effacer le canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Dessiner tous les objets du jeu
+        this.drawAllObjects();
+
+        // Dessiner l'icône de pause
+        this.menu.drawPauseIcon();
+
+        // Dessiner la jauge de boost
+        this.drawBoostGauge();
+
+        // Dessiner le score
+        this.drawScore();
+    }
+
+
     // Dessine le score du joueur
     drawScore() {
         this.ctx.save();
@@ -198,8 +239,13 @@ export default class Game {
     drawAllObjects() {
         // Dessine tous les objets du jeu
         this.objetsGraphiques.forEach(obj => obj.draw(this.ctx));
-        this.bonuses.forEach(bonus => bonus.draw(this.ctx)); // Dessine les bonus
+        this.bonuses.forEach(bonus => {
+            if (bonus) {
+                bonus.draw(this.ctx); // Dessine les bonus seulement s'ils existent
+            }
+        });
     }
+
 
     // Dessine la jauge de boost
     drawBoostGauge() {
@@ -266,11 +312,15 @@ export default class Game {
     }
 
     checkFall() {
+        if (this.menu.isPaused) return; // Ne pas vérifier la chute si le jeu est en pause
+
         if (!this.estSurPlateforme) {
             if (!this.fallTimer) {
                 this.fallTimer = setTimeout(() => {
-                    this.gameOver();
-                }, 1700); // 1,5 secondes
+                    if (!this.menu.isPaused) { // Vérifier si le jeu est toujours en pause avant de déclencher gameOver
+                        this.gameOver();
+                    }
+                }, 1000); // 1 seconde
             }
         } else {
             clearTimeout(this.fallTimer);
@@ -280,12 +330,14 @@ export default class Game {
 
     gameOver() {
         this.menu.isPaused = true;
-        this.menu.showGameOverMenu(); // Display game over menu
+        this.menu.showGameOverMenu(); // Afficher menu Game Over
     }
 
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
     checkBonusCollisions() {
         this.bonuses = this.bonuses.filter(bonus => {
+            if (!bonus) return false; // Si pas de bonus, sortir du filtre
+
             const playerLeft = this.player.x - this.player.w / 2;
             const playerRight = this.player.x + this.player.w / 2;
             const playerTop = this.player.y - this.player.h / 2;
@@ -424,7 +476,6 @@ export default class Game {
     }
 
     testCollisionPlayerBordsEcran() {
-        // Rappel : le x, y du joueur est en son centre, pas dans le coin en haut à gauche!
         if (this.player.x - this.player.w / 2 < 0) {
             // On stoppe le joueur
             this.player.vitesseX = 0;
@@ -506,5 +557,28 @@ export default class Game {
 
         // Mise à jour de l'état global
         this.estSurPlateforme = estSurPlateformeTemp;
+    }
+
+    startGame() {
+        if (!this.gameStarted) {
+            this.gameStarted = true;
+            this.start();
+        }
+    }
+
+    resetGame() {
+        // Nettoyer les timers actifs pour éviter des doublons
+        clearTimeout(this.fallTimer);
+        this.fallTimer = null;
+        clearInterval(this.platformInterval);
+
+        // Supprimer les objets graphiques pour éviter l’accumulation
+        this.objetsGraphiques = [];
+        this.bonuses = [];
+
+        // Signaler que le jeu doit être redémarré
+        if (this.onGameRestart) {
+            this.onGameRestart(); // Appelle `startGame()` dans `script.js`
+        }
     }
 }

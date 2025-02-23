@@ -1,21 +1,24 @@
-function initListeners(inputStates, canvas, menu) {
+function initListeners(inputStates, canvas, menu, startGame) {
     window.onkeydown = (event) => {
-        if(event.key === " ") {
+        if (event.key === " ") {
             inputStates.Space = true;
         }
-        if(event.key === "f" || event.key === "F") {
+        if (event.key === "f" || event.key === "F") {
             inputStates.F = true;
         }
-        if(event.key === "Escape") {
+        if (event.key === "Escape") {
             menu.togglePause();
+        }
+        if (event.key === "Enter") {
+            startGame();
         }
     }
 
     window.onkeyup = (event) => {
-        if(event.key === " ") {
+        if (event.key === " ") {
             inputStates.Space = false;
         }
-        if(event.key === "f" || event.key === "F") {
+        if (event.key === "f" || event.key === "F") {
             inputStates.F = false;
         }
     }

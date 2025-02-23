@@ -11,11 +11,15 @@ export default class Plateforme extends ObjectGraphique {
     }
 
     createBonus() {
-        const bonusTypes = ['green', 'blue'];
-        const type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-        const bonusX = this.x; // Aligner le bonus avec le pilier
-        const bonusY = this.y - 200; // 200px au-dessus de la plateforme
-        return new Bonus(bonusX, bonusY, type);
+        const chance = Math.random();
+        if (chance > 0.7) { // 30% de créer un bonus
+            const bonusTypes = ['green', 'green', 'green', 'green', 'blue']; // 80% vert, 20% bleu
+            const type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
+            const bonusX = this.x; // Aligner le bonus avec le pilier
+            const bonusY = this.y - 200; // 200px au-dessus de la plateforme
+            return new Bonus(bonusX, bonusY, type);
+        }
+        return null; // Aucun bonus créé
     }
 
     draw(ctx) {

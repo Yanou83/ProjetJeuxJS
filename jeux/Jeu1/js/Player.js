@@ -3,11 +3,11 @@ import { drawCircleImmediat } from "./utils.js";
 import Vehicule from "./Vehicule.js";
 
 export default class Player extends ObjectGraphique {
-    constructor(x, y) {
+    constructor(x, y, couleur) {
         super(x, y, 150, 150);
         this.vitesseX = 0;
         this.vitesseY = 0;
-        this.couleur = "green";
+        this.couleur = couleur;
         this.angle = 0;
         this.vehicule = new Vehicule(this.couleur);
         this.flameImageSrc = "/jeux/images/feu_boost.gif";
