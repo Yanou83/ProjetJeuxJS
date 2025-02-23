@@ -6,6 +6,15 @@ import MainMenu from "./MainMenu.js";
 window.onload = init;
 
 async function init() {
+    // Vérifier si l'utilisateur est authentifié
+    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+    const userEmail = sessionStorage.getItem("userEmail");
+    if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
+        window.location.href = "/login";
+        return;
+    }
+    console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
+
     // On recupère le canvas
     let canvas = document.querySelector("#myCanvas");
 
@@ -21,7 +30,6 @@ async function init() {
 
         // On cree une instance du jeu
         let game = new Game(canvas, selectedColor);
-
 
         game.onGameRestart = () => restartGame(selectedColor);
 

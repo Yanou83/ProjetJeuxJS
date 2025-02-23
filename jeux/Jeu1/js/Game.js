@@ -3,6 +3,7 @@ import Plateforme from "./Plateforme.js";
 import ObjetSouris from "./ObjetSouris.js";
 import { initListeners } from "./ecouteurs.js";
 import Menu from "./Menu.js";
+import { saveBestScore } from "./utils.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -11,10 +12,12 @@ export default class Game {
     transitionState = false;
     transitionComplete = false;
     score = 0;
-    boostSpeed = 0; // Variable to track the current boost speed
+    boostSpeed = 0; // Variable pour gérer le boost de vitesse
     fallTimer = null; // Chronomètre pour la chute du joueur
-    startingPlatformGenerated = false; // Flag to ensure the starting platform is generated only once
-    gameStarted = false; // Flag to check if the game has started
+    startingPlatformGenerated = false; // Flag pour s'assurer que la première plateforme est générée qu'une fois
+    gameStarted = false; // Flag pour vérifier si le jeu a démarré
+    gameName = "Ratscooter"; // Nom jeu
+    userEmail = sessionStorage.getItem('userEmail'); // Email de l'utilisateur
 
 
     constructor(canvas, selectedColor) {
@@ -330,7 +333,13 @@ export default class Game {
 
     gameOver() {
         this.menu.isPaused = true;
+        console.log("Game Over - Score Final:", this.score); // Vérifier si le score est bon avant l'affichage du menu
+
         this.menu.showGameOverMenu(); // Afficher menu Game Over
+
+        if (this.userEmail) {
+            saveBestScore(this.score, this.userEmail, this.gameName);
+        }
     }
 
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
@@ -575,6 +584,7 @@ export default class Game {
         // Supprimer les objets graphiques pour éviter l’accumulation
         this.objetsGraphiques = [];
         this.bonuses = [];
+        this.score = 0;
 
         // Signaler que le jeu doit être redémarré
         if (this.onGameRestart) {

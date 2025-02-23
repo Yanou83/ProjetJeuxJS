@@ -75,6 +75,7 @@ function handleLogin(event) {
     const userData = JSON.parse(storedUserData);
     if (userData.password === password) {
         sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userEmail', email);
         showNotification("Connexion réussie !", "success");
         setTimeout(() => {
             const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';

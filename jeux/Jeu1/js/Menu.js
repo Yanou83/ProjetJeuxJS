@@ -1,3 +1,5 @@
+import { getBestScore } from './utils.js'; // Import getBestScore function
+
 export default class Menu {
     constructor(canvas, game) {
         this.canvas = canvas;
@@ -58,6 +60,9 @@ export default class Menu {
 
 
     createGameOverMenu() {
+        const userEmail = this.game.userEmail;
+        const gameName = this.game.gameName;
+
         // Fond flouté du menu Game Over
         this.gameOverOverlay = document.createElement("div");
         this.gameOverOverlay.id = "game-over-menu-overlay";
@@ -76,9 +81,23 @@ export default class Menu {
         separator.className = "separator";
         this.gameOverMenuContainer.appendChild(separator);
 
+        // Score réalisé lors de la partie
+        const currentScoreText = document.createElement("p");
+        currentScoreText.id = "current-score"; // Ajout de l'ID pour pouvoir le mettre à jour plus tard
+        currentScoreText.innerText = `Score réalisé: ${this.game.score}`;
+        this.gameOverMenuContainer.appendChild(currentScoreText);
+
+
+
+        // Meilleur score du joueur
+        const bestScore = getBestScore(userEmail, gameName);
+        const bestScoreText = document.createElement("p");
+        bestScoreText.innerText = `Meilleur score: ${bestScore}`;
+        this.gameOverMenuContainer.appendChild(bestScoreText);
+
         // Bouton "Recommencer le jeu"
         const restartButton = document.createElement("button");
-        restartButton.innerText = "🔄 Recommencer le jeu";
+        restartButton.innerText = "🔄 Nouvelle partie";
         restartButton.onclick = () => {
             this.hideGameOverMenu();
             this.game.resetGame(); // Appeler la méthode resetGame pour réinitialiser le jeu
@@ -108,6 +127,12 @@ export default class Menu {
     }
 
     showGameOverMenu() {
+        // Met à jour le score au moment d'afficher le menu
+        const currentScoreText = this.gameOverMenuContainer.querySelector("#current-score");
+        if (currentScoreText) {
+            currentScoreText.innerText = `Score réalisé: ${this.game.score}`;
+        }
+
         this.gameOverOverlay.classList.add("visible");
     }
 
