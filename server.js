@@ -24,7 +24,7 @@ app.get('/login', (req, res) => {
 });
 
 // Route jeu 1
-app.get('/jeu1', (req, res) => {
+app.get('/Ratscooter', (req, res) => {
     res.sendFile(path.join(__dirname, 'jeux/Jeu1/Jeu1.html'));
 });
 

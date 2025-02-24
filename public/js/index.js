@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (firstSmallImage.classList.contains('active')) {
                 imagePresentation.src = 'public/assets/images/ratscooter_presentation.png';
                 imagePresentation.alt = 'RatsooterPresentation';
-                productPresentationTitle.textContent = 'Ratsooter';
-                productPresentationText.textContent = 'Plongez dans l\'univers de Ratsooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
+                productPresentationTitle.textContent = 'Ratscooter';
+                productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
             } else {
                 imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
                 imagePresentation.alt = '';
@@ -76,9 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (firstSmallImage.classList.contains('active')) {
             const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
             if (isAuthenticated) {
-                window.location.href = '/jeu1';
+                window.location.href = '/Ratscooter';
             } else {
-                sessionStorage.setItem('redirectAfterLogin', '/jeu1');
+                sessionStorage.setItem('redirectAfterLogin', '/Ratscooter');
                 window.location.href = '/login';
             }
         }
