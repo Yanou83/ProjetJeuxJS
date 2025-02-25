@@ -4,15 +4,17 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), 
-        url('../../images/fond_paris.jpg') no-repeat center center;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+        url('../../images/parisnuit.png') no-repeat center center;
     background-size: cover;
     z-index: 0;
+    filter: blur(3px);  /* Flou */
 }
 
 #myCanvas {
     position: relative;
     border: 1px solid black;
-    z-index: 1; /* Assure que le canvas est au-dessus du fond */
+    z-index: 1;
+    /* Assure que le canvas est au-dessus du fond */
 }

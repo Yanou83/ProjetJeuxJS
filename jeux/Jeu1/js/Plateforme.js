@@ -2,24 +2,26 @@ import ObjectGraphique from "./ObjectGraphique.js";
 import Bonus from "./Bonus.js";
 
 export default class Plateforme extends ObjectGraphique {
-    constructor(x, y, epaisseur, longueurPilier, largeurBarre, couleur) {
+    constructor(x, y, epaisseur, longueurPilier, largeurBarre, couleur, isFirstPlatform = false) {
         super(x, y, epaisseur, longueurPilier, couleur);
         this.epaisseur = epaisseur;
         this.longueurPilier = longueurPilier;
         this.largeurBarre = largeurBarre;
         this.bonus = this.createBonus();
-
-        // Ajustement de la hauteur des piliers latéraux 
-        this.longueurPilierGauche = longueurPilier + 30; // Plus bas que le central
-        this.longueurPilierDroit = longueurPilier + 30; // Plus bas que le central
+        this.couleur = 'orange';
+        this.isFirstPlatform = isFirstPlatform;
     }
 
     createBonus() {
+        if (this.isFirstPlatform) {
+            return null; // Pas de bonus sur la première plateforme
+        }
+
         const chance = Math.random();
-        if (chance > 0.7) { // 30% de créer un bonus
+        if (chance > 0.7) { // 30% de chances de créer un bonus
             const bonusTypes = ['green', 'green', 'green', 'green', 'blue']; // 80% vert, 20% bleu
             const type = bonusTypes[Math.floor(Math.random() * bonusTypes.length)];
-            const bonusX = this.x; // Aligner le bonus avec le pilier
+            const bonusX = this.x; // Aligner le bonus avec le pilier central
             const bonusY = this.y - 200; // 200px au-dessus de la plateforme
             return new Bonus(bonusX, bonusY, type);
         }
@@ -28,29 +30,38 @@ export default class Plateforme extends ObjectGraphique {
 
     draw(ctx) {
         ctx.save();
+        ctx.fillStyle = 'black';
+
+        // Dessiner la barre horizontale principale (centrée sur le pilier)
+        const barreX = this.x - (this.largeurBarre - this.epaisseur) / 2;
+        const barreY = this.y;
+        ctx.fillRect(barreX, barreY, this.largeurBarre, this.epaisseur + 10);
+
         ctx.fillStyle = this.couleur;
 
-        // Dessiner le pilier (vertical)
-        ctx.fillRect(this.x, this.y, this.epaisseur, this.longueurPilier);
-
-        // Dessiner la barre horizontale (centrée sur le pilier)
-        const barreX = this.x - (this.largeurBarre - this.epaisseur) / 2; // Centre la barre sur le pilier
-        const barreY = this.y; // En haut du pilier
-        ctx.fillRect(barreX, barreY, this.largeurBarre, this.epaisseur);
-
-        // Dessiner la nouvelle barre horizontale juste au-dessus de l'existante
-        const newBarreY = barreY - this.epaisseur - 50; // 10px au-dessus de la barre existante
+        // Dessiner la barre horizontal au-dessus de la plateforme
+        const newBarreY = barreY - this.epaisseur - 50; // 50px au-dessus de la barre existante
         ctx.fillRect(barreX, newBarreY, this.largeurBarre, this.epaisseur);
 
-        // Dessiner les deux barrières verticales aux extrémités
-        const pilierGaucheX = barreX; // Positionner le pilier gauche à l'extrémité gauche de la barre
-        const pilierDroitX = barreX + this.largeurBarre - this.epaisseur; // Positionner le pilier droit à l'extrémité droite
+        // Dessiner les autres barres horizontales
+        for (let i = 1; i <= 3; i++) {
+            const newBarreY = barreY - (this.epaisseur - 150 * i);
+            ctx.fillRect(barreX, newBarreY, this.largeurBarre, this.epaisseur);
+        }
 
-        ctx.fillRect(pilierGaucheX, barreY, this.epaisseur, -this.longueurPilierGauche); // Pilier gauche (montant vers le haut)
-        ctx.fillRect(pilierDroitX, barreY, this.epaisseur, -this.longueurPilierDroit); // Pilier droit (montant vers le haut)
+        // Positionner les barres verticales aux extrémités de la barre horizontale
+        const extremiteGaucheX = barreX;
+        const extremiteDroiteX = barreX + this.largeurBarre - this.epaisseur;
+        const hauteurBarreVerticale = this.epaisseur * 300; // Hauteur des barres verticales
 
-        // Dessiner le bonus SEULEMENT s'il existe
-        if (this.bonus) {
+        // Dessiner la barre verticale gauche
+        ctx.fillRect(extremiteGaucheX, barreY - (hauteurBarreVerticale / 7) / 2 + 100, this.epaisseur, hauteurBarreVerticale);
+
+        // Dessiner la barre verticale droite
+        ctx.fillRect(extremiteDroiteX, barreY - (hauteurBarreVerticale / 7) / 2 + 100, this.epaisseur, hauteurBarreVerticale);
+
+        // Dessiner le bonus s'il existe
+        if (this.bonus && !this.isFirstPlatform) {
             this.bonus.draw(ctx);
         }
 
@@ -60,8 +71,7 @@ export default class Plateforme extends ObjectGraphique {
     move(dx) {
         this.x += dx;
         if (this.bonus) {
-            this.bonus.x += dx;  // Déplacer le bonus avec la plateforme
+            this.bonus.x += dx; // Déplacer le bonus avec la plateforme
         }
     }
-
 }

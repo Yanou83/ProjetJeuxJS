@@ -62,7 +62,7 @@ export default class MainMenu {
     }
 
     createColorPicker() {
-        const colors = ["#007BFF", "red", "#FFC300", "#28A745", "#E83E8C", "#6610F2", "#17A2B8", "#FD7E14", "grey"];
+        const colors = ["#007BFF", "red", "yellow", "green", "pink", "purple", "#17A2B8", "orange", "grey"];
         const colorPickerContainer = document.createElement("div");
         colorPickerContainer.id = "color-picker-container";
 

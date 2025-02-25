@@ -15,6 +15,7 @@ export default class Player extends ObjectGraphique {
         this.flameCanvas = document.createElement('canvas');
         this.flameCanvas.width = 40;
         this.flameCanvas.height = 100;
+        this.colorPlayer = "maroon";
 
         this.initFlameAnimation();
     }
@@ -41,15 +42,8 @@ export default class Player extends ObjectGraphique {
         ctx.translate(25, 0); // Ajuster cette valeur pour décaler le corps vers la droite
         this.drawBody(ctx);
         ctx.restore();
-
         ctx.restore();
 
-        // Dessiner la hitbox (rectangle rouge) avec inclinaison
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 2;
         // Ajuster la hitbox pour inclure uniquement la partie basse
         ctx.strokeRect(-this.w / 2, -this.h / 2, this.w, this.h);
         ctx.restore();
@@ -63,19 +57,19 @@ export default class Player extends ObjectGraphique {
         ctx.save();
 
         // tete
-        drawCircleImmediat(ctx, 30, 25, 22, "brown");
+        drawCircleImmediat(ctx, 30, 25, 22, this.colorPlayer);
 
         // yeux
         this.drawEyes(ctx);
 
         //nez
-        drawCircleImmediat(ctx, 52, 32, 10, "brown");
-        drawCircleImmediat(ctx, 67, 32, 8, "brown");
-        drawCircleImmediat(ctx, 77, 32, 5, "brown");
+        drawCircleImmediat(ctx, 52, 32, 10, this.colorPlayer);
+        drawCircleImmediat(ctx, 67, 32, 8, this.colorPlayer);
+        drawCircleImmediat(ctx, 77, 32, 5, this.colorPlayer);
         ctx.fillStyle = "black";
         drawCircleImmediat(ctx, 87, 32, 6, "black");
 
-        ctx.fillStyle = "brown";
+        ctx.fillStyle = this.colorPlayer;
         // Corps du monstre (triangle équilateral avec bords arrondis, encore plus élargi)
         ctx.beginPath();
         ctx.moveTo(30, 35); // Point supérieur
@@ -86,7 +80,7 @@ export default class Player extends ObjectGraphique {
         ctx.fill();
 
         // Jambes du monstre (traits parallèles inclinés à 45 degrés)
-        ctx.strokeStyle = "brown";
+        ctx.strokeStyle = this.colorPlayer;
         ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(25, 70); // Début de la jambe
@@ -125,7 +119,7 @@ export default class Player extends ObjectGraphique {
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(45 * Math.PI / 180);
-        ctx.fillStyle = "brown";
+        ctx.fillStyle = this.colorPlayer;
         ctx.beginPath();
         ctx.moveTo(radius, 0);
         ctx.lineTo(width - radius, 0);

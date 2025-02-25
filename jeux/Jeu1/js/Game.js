@@ -85,7 +85,7 @@ export default class Game {
     // Générer plateforme de départ
     generateStartingPlatform() {
         if (!this.startingPlatformGenerated) {
-            const startingPlatform = new Plateforme(400, 370, 10, 350, 300, "brown");
+            const startingPlatform = new Plateforme(400, 370, 10, 350, 300, "brown", true);
             this.objetsGraphiques.push(startingPlatform);
             this.startingPlatformGenerated = true;
         }
@@ -94,12 +94,12 @@ export default class Game {
     // Génrer les plateformes
     generatePlatforms() {
         const platformTemplates = [
-            { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200, couleur: "red" },
-            { y: 500, largeurBarre: 10, hauteurBarre: 225, longueurBarre: 200, couleur: "blue" },
-            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurBarre: 200, couleur: "yellow" },
-            { y: 400, largeurBarre: 10, hauteurBarre: 300, longueurBarre: 250, couleur: "green" },
-            { y: 450, largeurBarre: 10, hauteurBarre: 275, longueurBarre: 220, couleur: "purple" },
-            { y: 480, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 190, couleur: "orange" }
+            { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200 },
+            { y: 500, largeurBarre: 10, hauteurBarre: 225, longueurBarre: 200 },
+            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurBarre: 200 },
+            { y: 400, largeurBarre: 10, hauteurBarre: 300, longueurBarre: 250 },
+            { y: 450, largeurBarre: 10, hauteurBarre: 275, longueurBarre: 220 },
+            { y: 480, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 190 }
         ];
 
         let lastPlatform = this.objetsGraphiques
@@ -178,6 +178,7 @@ export default class Game {
 
         // 2 - on dessine les objets à animer dans le jeu
         this.drawAllObjects();
+
 
         // Dessiner l'icône de pause
         this.menu.drawPauseIcon();
