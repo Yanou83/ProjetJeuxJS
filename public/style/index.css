@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 :root {
-    --violet: #d33bfd;
+    --blue: #00358b;
 }
 
 body {
@@ -11,7 +11,7 @@ body {
 }
 
 header {
-    background: linear-gradient(#13181d, #20212e, #341b47);
+    background: linear-gradient(#13181d, #1b1d38, #00358b);
 }
 
 header nav {
@@ -26,7 +26,7 @@ header nav {
 header nav h1 {
     margin: 0;
     text-transform: uppercase;
-    color: var(--violet);
+    color: var(--blue);
 }
 
 header nav .right {
@@ -48,9 +48,9 @@ header nav .right button {
     padding: 5px 15px;
     font-size: 16px;
     background-color: inherit;
-    border: 1px solid var(--violet);
+    border: 1px solid var(--blue);
     border-radius: 5px;
-    color: var(--violet);
+    color: var(--blue);
     cursor: pointer;
     transition: color 0.5s, background-color 0.5s;
     margin-right: 5px;
@@ -58,35 +58,7 @@ header nav .right button {
 
 header nav .right button:hover {
     color: inherit;
-    background-color: var(--violet);
-}
-
-.burger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    z-index: 1;
-}
-
-.burger span {
-    height: 3px;
-    width: 25px;
-    background: white;
-    margin: 4px;
-    border-radius: 5px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.burger.open span:nth-child(1) {
-    transform: rotate(45deg) translate(7px, 8px);
-}
-
-.burger.open span:nth-child(2) {
-    opacity: 0;
-}
-
-.burger.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -8px);
+    background-color: var(--blue);
 }
 
 .presentation {
@@ -96,6 +68,7 @@ header nav .right button:hover {
     align-items: center;
     justify-content: space-between;
 }
+
 
 .presentation .product-presentation {
     width: 100%;
@@ -129,15 +102,15 @@ header nav .right button:hover {
 
 
 .first .product-presentation button {
-    background-color: var(--violet);
+    background-color: var(--blue);
     color: white;
-    border: 1px solid var(--violet);
+    border: 1px solid var(--blue);
     transition: background-color 0.5s, color 0.5s;
 }
 
 .first .product-presentation button:hover {
     background-color: inherit;
-    color: var(--violet);
+    color: var(--blue);
 }
 
 .first .product-presentation .scores {
@@ -148,7 +121,7 @@ header nav .right button:hover {
 }
 
 .first .product-presentation .scores:hover {
-    background-color: var(--violet);
+    background-color: var(--blue);
     color: var(--new-color);
 }
 
@@ -162,13 +135,13 @@ header nav .right button:hover {
 
 .first .product-presentation .small-images .small {
     padding: 20px;
-    background-color: #33314d;
+    background-color: #1b1d38;
     margin: 0 15px 15px 0;
     border-radius: 20px;
     transition: filter 0.5s;
-    width: 100px; 
-    height: 100px; 
-    overflow: hidden; 
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -179,10 +152,23 @@ header nav .right button:hover {
 }
 
 .first .product-presentation .small-images .small img {
-    width: 110px; 
-    height: 110px; 
-    object-fit: cover; 
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
 }
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+}
+
 
 #noGameSelected {
     margin-top: 15px;
@@ -220,7 +206,7 @@ header nav .right button:hover {
     align-items: center;
     width: 30%;
     height: 100%;
-    background-color: #20212e;
+    background-color: #1b1d38;
     border-radius: 20px;
     padding: 1rem;
 }
@@ -235,7 +221,7 @@ footer {
 }
 
 footer div {
-    color: var(--violet);
+    color: var(--blue);
 }
 
 footer p {
@@ -263,68 +249,22 @@ footer p {
         width: 90px;
     }
 
-    .burger {
-        display: flex;
-    }
-
-    .nav-menu {
-        position: fixed;
-        right: -100%;
-        top: 0;
-        height: 100%;
-        width: 250px;
-        background-color: #20212e;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 60px 20px;
-        transition: right 0.4s ease-in-out;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    }
-
-    .nav-menu.open {
-        right: 0;
-    }
-
-    .nav-menu p,
-    .nav-menu button {
-        margin: 15px 0;
-        width: 100%;
-        text-align: left;
-        padding: 15px 20px;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .nav-menu p:hover,
-    .nav-menu button:hover {
-        background-color: #33314d;
-    }
-
-    header nav .right p {
-        margin: 0;
-        padding-left: 60px;
-    }
-
-    header nav .right button {
-        margin: 0 0 15px 0;
-    }
-
     header nav .btn-acheter-horizontal,
     header nav .btn-se-connecter-horizontal {
         display: block;
         padding: 5px 15px;
         font-size: 16px;
         background-color: inherit;
-        border: 1px solid var(--violet);
+        border: 1px solid var(--blue);
         border-radius: 5px;
-        color: var(--violet);
+        color: var(--blue);
         cursor: pointer;
         transition: color 0.5s, background-color 0.5s;
     }
 
     header nav .btn-acheter-horizontal:hover {
         color: inherit;
-        background-color: var(--violet);
+        background-color: var(--blue);
     }
 
     .presentation .product-presentation h1 {
@@ -342,61 +282,6 @@ footer p {
     footer .column {
         width: 80%;
     }
-
-    .burger-menu {
-        display: flex;
-    }
-
-    .right {
-        position: fixed;
-        display: block;
-        right: -100%;
-        top: 0;
-        height: 100%;
-        width: 250px;
-        background: #20212e;
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 60px 20px;
-        transition: right 0.4s ease-in-out;
-        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    }
-
-    .right p,
-    .right button {
-        margin: 15px 0;
-        width: 100%;
-        text-align: left;
-        padding: 15px 20px;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .right p:hover,
-    .right button:hover {
-        background-color: #33314d;
-    }
-
-    .right.active {
-        right: 0;
-    }
-
-    .right.active p {
-        display: block;
-    }
-
-    .burger-menu.active span:nth-child(1) {
-        transform: rotate(-45deg) translate(-6px, 9px);
-    }
-
-    .burger-menu.active span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .burger-menu.active span:nth-child(3) {
-        transform: rotate(45deg) translate(-6px, -9px);
-    }
-
 
     .second {
         margin: 0;

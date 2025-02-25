@@ -8,6 +8,10 @@ export default class Plateforme extends ObjectGraphique {
         this.longueurPilier = longueurPilier;
         this.largeurBarre = largeurBarre;
         this.bonus = this.createBonus();
+
+        // Ajustement de la hauteur des piliers latéraux 
+        this.longueurPilierGauche = longueurPilier + 30; // Plus bas que le central
+        this.longueurPilierDroit = longueurPilier + 30; // Plus bas que le central
     }
 
     createBonus() {
@@ -33,6 +37,17 @@ export default class Plateforme extends ObjectGraphique {
         const barreX = this.x - (this.largeurBarre - this.epaisseur) / 2; // Centre la barre sur le pilier
         const barreY = this.y; // En haut du pilier
         ctx.fillRect(barreX, barreY, this.largeurBarre, this.epaisseur);
+
+        // Dessiner la nouvelle barre horizontale juste au-dessus de l'existante
+        const newBarreY = barreY - this.epaisseur - 50; // 10px au-dessus de la barre existante
+        ctx.fillRect(barreX, newBarreY, this.largeurBarre, this.epaisseur);
+
+        // Dessiner les deux barrières verticales aux extrémités
+        const pilierGaucheX = barreX; // Positionner le pilier gauche à l'extrémité gauche de la barre
+        const pilierDroitX = barreX + this.largeurBarre - this.epaisseur; // Positionner le pilier droit à l'extrémité droite
+
+        ctx.fillRect(pilierGaucheX, barreY, this.epaisseur, -this.longueurPilierGauche); // Pilier gauche (montant vers le haut)
+        ctx.fillRect(pilierDroitX, barreY, this.epaisseur, -this.longueurPilierDroit); // Pilier droit (montant vers le haut)
 
         // Dessiner le bonus SEULEMENT s'il existe
         if (this.bonus) {

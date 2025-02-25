@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const burger = document.querySelector('.burger');
     const navMenu = document.querySelector('.nav-menu');
     const authButton = document.getElementById('auth-button');
     const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const firstSmallImage = document.querySelector('.small:first-child');
     const productPresentationTitle = document.querySelector('.product-presentation h1');
     const productPresentationText = document.querySelector('.product-presentation p');
-    
+
 
     if (isAuthenticated) {
         authButton.textContent = 'Se déconnecter';
@@ -36,27 +35,39 @@ document.addEventListener('DOMContentLoaded', () => {
             div.classList.add('active');
             updateButton();
 
-            if (firstSmallImage.classList.contains('active')) {
-                imagePresentation.src = 'public/assets/images/ratscooter_presentation.png';
-                imagePresentation.alt = 'RatsooterPresentation';
-                productPresentationTitle.textContent = 'Ratscooter';
-                productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
-            } else {
-                imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
-                imagePresentation.alt = '';
-                productPresentationTitle.textContent = 'Découvrir le jeu d\'une autre façon';
-                productPresentationText.textContent = 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum odio eos beatae labore possimus. Pariatur ipsa, tempore optio placeat expedita minus cupiditate nulla iure quis error. A vitae quibusdam ipsum dolor sit amet consectetur adipisicing elit.';
-            }
+            // Ajouter l'effet de transition
+            productPresentationTitle.classList.add('fade-out');
+            productPresentationText.classList.add('fade-out');
+            imagePresentation.classList.add('fade-out');
+
+            setTimeout(() => {
+                if (firstSmallImage.classList.contains('active')) {
+                    imagePresentation.src = 'public/assets/images/ratscooter_presentation.png';
+                    imagePresentation.alt = 'RatsooterPresentation';
+                    productPresentationTitle.textContent = 'Ratscooter';
+                    productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
+                } else {
+                    imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
+                    imagePresentation.alt = '';
+                    productPresentationTitle.textContent = 'Découvrir le jeu d\'une autre façon';
+                    productPresentationText.textContent = 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum odio eos beatae labore possimus. Pariatur ipsa, tempore optio placeat expedita minus cupiditate nulla iure quis error. A vitae quibusdam ipsum dolor sit amet consectetur adipisicing elit.';
+                }
+
+                // Retirer l'effet de fade-out et ajouter fade-in après le changement
+                productPresentationTitle.classList.remove('fade-out');
+                productPresentationText.classList.remove('fade-out');
+                imagePresentation.classList.remove('fade-out');
+
+                productPresentationTitle.classList.add('fade-in');
+                productPresentationText.classList.add('fade-in');
+                imagePresentation.classList.add('fade-in');
+
+            }, 100); 
         });
     });
 
-    updateButton();
 
-    burger.addEventListener('click', () => {
-        burger.classList.toggle('open');
-        navMenu.classList.toggle('open');
-        burger.classList.toggle('cross');
-    });
+    updateButton();
 
     smallImages.forEach(div => {
         div.addEventListener('click', () => {
