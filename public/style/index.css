@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 :root {
-    --blue: #00358b;
+    --blue: red;
 }
 
 body {
@@ -200,15 +200,59 @@ header nav .right button:hover {
 }
 
 .divJeu {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 30%;
     height: 100%;
     background-color: #1b1d38;
     border-radius: 20px;
     padding: 1rem;
+}
+
+.divJeu img {
+    opacity: 0.5;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.divJeu h1 {
+    position: relative;
+    color: white;
+    text-align: center;
+    font-size: 2em;
+    z-index: 1;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.scores-list {
+    width: 100%;
+    margin-top: 20px;
+    color: white;
+    list-style: none;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.scores-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.scores-list li span {
+    font-size: 1.2em;
 }
 
 footer {
@@ -275,6 +319,75 @@ footer p {
         display: none;
     }
 
+    .divScores {
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 1rem;
+        height: auto;
+        align-items: center; 
+    }
+
+    .divJeu {
+        width: 90%;
+        min-height: 250px;
+        overflow: hidden;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; 
+        position: relative;
+    }
+
+    .divJeu img {
+        max-width: 60%; 
+        height: auto;
+        opacity: 0.4; 
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .divJeu h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1; 
+    }
+
+    .scores-list {
+        width: 80%;
+        margin-top: 20px;
+        color: white;
+        list-style: none;
+        padding: 0;
+        position: relative;
+        z-index: 2; 
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .scores-list li {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        background-color: rgba(0, 0, 0, 0.6);
+        margin-bottom: 10px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .scores-list li span {
+        font-size: 1.2em;
+        flex: 1;
+        text-align: center; /* Centre le texte des scores */
+    }
+
     footer {
         justify-content: flex-start;
     }
@@ -290,13 +403,4 @@ footer p {
         justify-content: center;
         align-items: center;
     }
-
-    .divScores {
-        flex-direction: column;
-    }
-
-    .divJeu {
-        width: 100%;
-    }
-
 }

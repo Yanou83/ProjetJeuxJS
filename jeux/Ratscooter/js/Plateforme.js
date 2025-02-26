@@ -30,7 +30,7 @@ export default class Plateforme extends ObjectGraphique {
 
     draw(ctx) {
         ctx.save();
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = '#3d3a3a';
 
         // Dessiner la barre horizontale principale (centrée sur le pilier)
         const barreX = this.x - (this.largeurBarre - this.epaisseur) / 2;

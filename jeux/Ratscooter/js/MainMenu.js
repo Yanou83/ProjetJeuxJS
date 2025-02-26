@@ -21,7 +21,7 @@ export default class MainMenu {
 
         // Ajouter un titre
         const title = document.createElement("h1");
-        title.innerText = "🛵 Ratsooter";
+        title.innerText = "🛵 Ratscooter";
         this.menuContainer.appendChild(title);
 
         // Ajouter une ligne décorative

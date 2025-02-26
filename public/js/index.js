@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(() => {
                 if (firstSmallImage.classList.contains('active')) {
-                    imagePresentation.src = 'public/assets/images/ratscooter_presentation.png';
+                    imagePresentation.src = 'public/assets/images/Ratscooter/ratscooter_presentation.png';
                     imagePresentation.alt = 'RatsooterPresentation';
                     productPresentationTitle.textContent = 'Ratscooter';
                     productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 productPresentationText.classList.add('fade-in');
                 imagePresentation.classList.add('fade-in');
 
-            }, 100); 
+            }, 100);
         });
     });
 
@@ -75,6 +75,9 @@ document.addEventListener('DOMContentLoaded', () => {
             div.classList.add('active');
         });
     });
+
+    // Charger et afficher les scores au chargement de la page
+    displayScores();
 
     const scoresButton = document.querySelector('.scores');
     const secondSection = document.querySelector('.presentation.second');
@@ -95,6 +98,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function displayScores() {
+    const gameTitles = ["Ratscooter", "Jeu2", "Jeu3"]; // Liste des jeux
+    const divJeux = document.querySelectorAll('.divJeu');
+
+    divJeux.forEach((divJeu, index) => {
+        const scoresList = divJeu.querySelector('.scores-list');
+        scoresList.innerHTML = ''; // Reinitialiser la liste des scores
+        const scoresArray = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            const user = JSON.parse(localStorage.getItem(key));
+
+            if (user) {
+                const gameName = gameTitles[index]; // Obtenir le nom du jeu
+                const score = user.scores && user.scores[gameName] !== undefined ? user.scores[gameName] : 'N/A';
+                scoresArray.push({ pseudo: user.pseudo, score: score });
+            }
+        }
+
+        // Trier scoresArray par ordre décroissant
+        scoresArray.sort((a, b) => {
+            if (a.score === 'N/A') return 1;
+            if (b.score === 'N/A') return -1;
+            return b.score - a.score;
+        });
+
+        // Afficher les scores des joueurs dans l'ordre
+        scoresArray.forEach((user, position) => {
+            scoresList.innerHTML += `
+                <li>
+                    <span>${position + 1}. ${user.pseudo}</span>
+                    <span>${user.score}</span>
+                </li>
+            `;
+        });
+    });
+}
 
 function handleAuthButtonClick() {
     const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';

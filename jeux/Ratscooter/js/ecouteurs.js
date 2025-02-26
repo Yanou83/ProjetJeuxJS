@@ -3,7 +3,7 @@ function initListeners(inputStates, canvas, menu, startGame) {
         if (event.key === " ") {
             inputStates.Space = true;
         }
-        if (event.key === "f" || event.key === "F") {
+        if (event.key === "e" || event.key === "E") {
             inputStates.F = true;
         }
         if (event.key === "Escape") {
@@ -18,7 +18,7 @@ function initListeners(inputStates, canvas, menu, startGame) {
         if (event.key === " ") {
             inputStates.Space = false;
         }
-        if (event.key === "f" || event.key === "F") {
+        if (event.key === "e" || event.key === "E") {
             inputStates.F = false;
         }
     }

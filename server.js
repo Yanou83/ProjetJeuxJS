@@ -25,7 +25,7 @@ app.get('/login', (req, res) => {
 
 // Route jeu 1
 app.get('/Ratscooter', (req, res) => {
-    res.sendFile(path.join(__dirname, 'jeux/Jeu1/Jeu1.html'));
+    res.sendFile(path.join(__dirname, 'jeux/Ratscooter/Ratscooter.html'));
 });
 
 // Gestion des erreurs 404 (toutes les autres routes)

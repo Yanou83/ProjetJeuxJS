@@ -85,7 +85,7 @@ export default class Game {
     // Générer plateforme de départ
     generateStartingPlatform() {
         if (!this.startingPlatformGenerated) {
-            const startingPlatform = new Plateforme(400, 370, 10, 350, 300, "brown", true);
+            const startingPlatform = new Plateforme(400, 370, 10, 350, 500, "brown", true);
             this.objetsGraphiques.push(startingPlatform);
             this.startingPlatformGenerated = true;
         }
@@ -94,17 +94,17 @@ export default class Game {
     // Génrer les plateformes
     generatePlatforms() {
         const platformTemplates = [
-            { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 200 },
-            { y: 500, largeurBarre: 10, hauteurBarre: 225, longueurBarre: 200 },
-            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurBarre: 200 },
-            { y: 400, largeurBarre: 10, hauteurBarre: 300, longueurBarre: 250 },
-            { y: 450, largeurBarre: 10, hauteurBarre: 275, longueurBarre: 220 },
-            { y: 480, largeurBarre: 10, hauteurBarre: 350, longueurBarre: 190 }
+            { y: 370, largeurBarre: 10, hauteurBarre: 350, longueurMin: 190, longueurMax: 300 },
+            { y: 500, largeurBarre: 10, hauteurBarre: 225, longueurMin: 190, longueurMax: 300 },
+            { y: 430, largeurBarre: 10, hauteurBarre: 420, longueurMin: 200, longueurMax: 300 },
+            { y: 400, largeurBarre: 10, hauteurBarre: 300, longueurMin: 220, longueurMax: 300 },
+            { y: 450, largeurBarre: 10, hauteurBarre: 275, longueurMin: 200, longueurMax: 300 },
+            { y: 480, largeurBarre: 10, hauteurBarre: 350, longueurMin: 190, longueurMax: 300 }
         ];
 
         let lastPlatform = this.objetsGraphiques
             .filter(obj => obj instanceof Plateforme)
-            .reduce((last, current) => (current.x > last.x ? current : last), { x: 500 });
+            .reduce((last, current) => (current.x > last.x ? current : last), { x: 600 });
 
         // Augmentation progressive de l’espacement, limité à `maxSpacing`
         this.baseSpacing = Math.min(this.maxSpacing, this.baseSpacing + this.spacingIncreaseRate);
@@ -113,6 +113,10 @@ export default class Game {
 
         for (let i = 0; i < 10; i++) {
             const template = platformTemplates[Math.floor(Math.random() * platformTemplates.length)];
+
+            // Générer une longueur aléatoire dans l'intervalle spécifié
+            const longueurBarre = Math.floor(Math.random() * (template.longueurMax - template.longueurMin + 1)) + template.longueurMin;
+
             const xPosition = startX + i * this.baseSpacing + Math.floor(Math.random() * 100 - 50);
 
             const plateforme = new Plateforme(
@@ -120,8 +124,7 @@ export default class Game {
                 template.y,
                 template.largeurBarre,
                 template.hauteurBarre,
-                template.longueurBarre,
-                template.couleur
+                longueurBarre
             );
 
             this.objetsGraphiques.push(plateforme);
@@ -361,7 +364,7 @@ export default class Game {
             const isColliding = playerRight > bonusLeft && playerLeft < bonusRight && playerBottom > bonusTop && playerTop < bonusBottom;
 
             if (isColliding) {
-                this.score += bonus.type === 'green' ? 1 : 3;
+                this.score += bonus.type === 'green' ? 10 : 30;
 
                 const plateforme = this.objetsGraphiques.find(obj => obj instanceof Plateforme && obj.bonus === bonus);
                 if (plateforme) {
