@@ -33,7 +33,7 @@ export default class Player extends ObjectGraphique {
 
         // Dessiner le véhicule plus bas
         ctx.save();
-        ctx.translate(0, this.angle >= Math.PI / 14 ? 40 : 20); // Ajuster cette valeur pour positionner le véhicule plus bas
+        ctx.translate(0, this.angle >= Math.PI / 14 ? 40 : 21); // Ajuster cette valeur pour positionner le véhicule plus bas
         this.vehicule.draw(ctx);
         ctx.restore();
 

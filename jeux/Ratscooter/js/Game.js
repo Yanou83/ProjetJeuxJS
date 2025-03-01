@@ -3,7 +3,7 @@ import Plateforme from "./Plateforme.js";
 import ObjetSouris from "./ObjetSouris.js";
 import { initListeners } from "./ecouteurs.js";
 import Menu from "./Menu.js";
-import { saveBestScore } from "./utils.js";
+import { getBestScore, saveBestScore } from "./utils.js";
 
 export default class Game {
     objetsGraphiques = [];
@@ -12,6 +12,7 @@ export default class Game {
     transitionState = false;
     transitionComplete = false;
     score = 0;
+    bestScore = 0;
     boostSpeed = 0; // Variable pour gérer le boost de vitesse
     fallTimer = null; // Chronomètre pour la chute du joueur
     startingPlatformGenerated = false; // Flag pour s'assurer que la première plateforme est générée qu'une fois
@@ -79,7 +80,8 @@ export default class Game {
     // Charger toutes les assets avant de démarrer le jeu
     async loadAssets() {
         const promises = this.objetsGraphiques.map(obj => obj.load ? obj.load() : Promise.resolve());
-        await Promise.all(promises);
+        const bonusPromises = this.bonuses.map(bonus => bonus ? bonus.load() : Promise.resolve());
+        await Promise.all([...promises, ...bonusPromises]);
     }
 
     // Générer plateforme de départ
@@ -223,18 +225,79 @@ export default class Game {
         // Dessiner la jauge de boost
         this.drawBoostGauge();
 
+        // Dessiner le bandeau d'instructions
+        this.drawBanner();
+
         // Dessiner le score
         this.drawScore();
     }
 
+    // Dessine le bandeau d'instructions
+    drawBanner() {
+        this.ctx.save();
+    
+        // Dimensions et position du bandeau
+        const bannerWidth = 450;
+        const bannerHeight = 120;
+        const xCenter = this.canvas.width / 2 - bannerWidth / 2;
+        const yCenter = this.canvas.height / 2 - bannerHeight / 2;
+    
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; // Fond sombre semi-transparent
+        this.ctx.strokeStyle = "rgba(0, 122, 20, 0.8)"; // Contour lumineux
+        this.ctx.lineWidth = 3;
+    
+        // Ombre lumineuse
+        this.ctx.shadowColor = "rgba(0, 122, 20, 0.5)"; // Effet néon vert
+        this.ctx.shadowBlur = 20;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
+    
+        // Dessiner le bandeau
+        this.ctx.fillRect(xCenter, yCenter, bannerWidth, bannerHeight);
+        this.ctx.strokeRect(xCenter, yCenter, bannerWidth, bannerHeight);
+    
+        // Enlever les ombres pour le texte
+        this.ctx.shadowBlur = 0;
+    
+        // Texte principal en blanc
+        this.ctx.fillStyle = "white";
+        this.ctx.font = "bold 22px 'Poppins', sans-serif";
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("Press ENTER to Start", this.canvas.width / 2, yCenter + 40);
+    
+        // Texte secondaire en gris clair
+        this.ctx.font = "16px 'Poppins', sans-serif";
+        this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        this.ctx.fillText("SPACE: Jump  |  E: Boost", this.canvas.width / 2, yCenter + 70);
+    
+        this.ctx.restore();
+    }
+    
+    
 
-    // Dessine le score du joueur
+
+    // Dessine les scores du joueur
     drawScore() {
         this.ctx.save();
         this.ctx.fillStyle = "black";
         this.ctx.font = "20px Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText(`Score: ${this.score}`, this.canvas.width / 2, 30);
+        this.bestScore = getBestScore(this.userEmail, this.gameName);
+        // Affichage du Meilleur score et du Score
+        const bestScoreText = `Record : ${this.bestScore}`;
+        const scoreText = `Score : ${this.score}`;
+
+        const xCenter = this.canvas.width / 2;
+        const yPosition = 30;
+
+        // Dessine le texte du record
+        this.ctx.fillText(bestScoreText, xCenter + 80, yPosition);
+
+        // Dessiner le score en gras
+        this.ctx.font = "bold 20px Arial";
+        this.ctx.fillText(scoreText, xCenter - 50, yPosition);
+
+
         this.ctx.restore();
     }
 
