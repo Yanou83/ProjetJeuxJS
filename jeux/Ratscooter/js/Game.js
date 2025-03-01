@@ -42,6 +42,8 @@ export default class Game {
         this.minSpacing = 600; // Espacement minimal
         this.maxSpacing = 930; // Espacement maximal pour éviter un jeu trop dur
         this.spacingIncreaseRate = 1.5; // Augmentation progressive de l'espacement
+
+        this.floatingScores = []; // Tableau pour stocker les scores flottants
     }
 
     async init() {
@@ -60,10 +62,10 @@ export default class Game {
         // Générer les plateformes automatiquement
         this.generatePlatforms();
 
-        // Répéter la génération de plateformes toutes les secondes
+        // Répéter la génération de plateformes toutes les 1.5 secondes
         setInterval(() => {
             this.generatePlatforms();
-        }, 1000);
+        }, 1500);
 
         // On initialise les écouteurs de touches, souris, etc.
         initListeners(this.inputStates, this.canvas, this.menu, this.startGame.bind(this));
@@ -134,6 +136,13 @@ export default class Game {
         }
     }
 
+    // Nettoyer les objets hors écran
+    removeOffscreenObjects() {
+        this.objetsGraphiques = this.objetsGraphiques.filter(obj => obj.x + obj.longueurBarre > 0);
+        this.bonuses = this.bonuses.filter(bonus => bonus && bonus.x > 0);
+    }
+
+
 
     checkAndGeneratePlatforms() {
         // Vérifier si le joueur atteint la 5ᵉ plateforme
@@ -167,7 +176,6 @@ export default class Game {
 
     mainAnimationLoop(timestamp) {
         if (this.menu.isPaused || !this.gameStarted) {
-            requestAnimationFrame(this.mainAnimationLoop.bind(this)); 
             return; // Ne pas continuer l'animation si le jeu est en pause ou n'a pas démarré
         }
 
@@ -204,6 +212,8 @@ export default class Game {
         // l'état des objets du jeu en conséquence
         this.update();
 
+        this.drawFloatingScores(); // Dessine les scores flottants
+
         // 4 - on demande au navigateur d'appeler la fonction mainAnimationLoop
         // à nouveau dans 1/60 de seconde
         requestAnimationFrame(this.mainAnimationLoop.bind(this));
@@ -236,44 +246,44 @@ export default class Game {
     // Dessine le bandeau d'instructions
     drawBanner() {
         this.ctx.save();
-    
+
         // Dimensions et position du bandeau
         const bannerWidth = 450;
         const bannerHeight = 120;
         const xCenter = this.canvas.width / 2 - bannerWidth / 2;
         const yCenter = this.canvas.height / 2 - bannerHeight / 2;
-    
+
         this.ctx.fillStyle = "rgba(0, 0, 0, 0.6)"; // Fond sombre semi-transparent
         this.ctx.strokeStyle = "rgba(0, 122, 20, 0.8)"; // Contour lumineux
         this.ctx.lineWidth = 3;
-    
+
         // Ombre lumineuse
         this.ctx.shadowColor = "rgba(0, 122, 20, 0.5)"; // Effet néon vert
         this.ctx.shadowBlur = 20;
         this.ctx.shadowOffsetX = 0;
         this.ctx.shadowOffsetY = 0;
-    
+
         // Dessiner le bandeau
         this.ctx.fillRect(xCenter, yCenter, bannerWidth, bannerHeight);
         this.ctx.strokeRect(xCenter, yCenter, bannerWidth, bannerHeight);
-    
+
         // Enlever les ombres pour le texte
         this.ctx.shadowBlur = 0;
-    
+
         // Texte principal en blanc
         this.ctx.fillStyle = "white";
         this.ctx.font = "bold 22px 'Poppins', sans-serif";
         this.ctx.textAlign = "center";
         this.ctx.fillText("Press ENTER to Start", this.canvas.width / 2, yCenter + 40);
-    
+
         // Texte secondaire en gris clair
         this.ctx.font = "16px 'Poppins', sans-serif";
         this.ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
         this.ctx.fillText("SPACE: Jump  |  E: Boost", this.canvas.width / 2, yCenter + 70);
-    
+
         this.ctx.restore();
     }
-    
+
     // Dessine les scores du joueur
     drawScore() {
         this.ctx.save();
@@ -336,6 +346,24 @@ export default class Game {
         this.ctx.strokeRect(x, y, gaugeWidth, gaugeHeight);
     }
 
+    // Dessine les scores flottants
+    drawFloatingScores() {
+        this.floatingScores = this.floatingScores.filter(score => {
+            this.ctx.save();
+            this.ctx.font = "bold 20px Arial";
+            this.ctx.fillStyle = `rgba(0, 122, 20, ${score.opacity})`;
+            this.ctx.textAlign = "center";
+            this.ctx.fillText(score.text, score.x, score.y);
+            this.ctx.restore();
+
+            // Animation : déplacer le texte vers le haut et réduire l'opacité
+            score.y -= 1; // Monte doucement
+            score.opacity -= 0.02; // Diminue l'opacité
+
+            return score.opacity > 0;
+        });
+    }
+
     // Regénère la jauge de boost
     regenerateBoost() {
         if (!this.boostActive && this.boost < 100) {
@@ -375,6 +403,10 @@ export default class Game {
         // Regénère la jauge de boost
         this.regenerateBoost();
 
+        // Supprime les objets hors écran
+        //this.removeOffscreenObjects();
+
+
         // Vérifie si le joueur est tombé de la plateforme
         this.checkFall();
     }
@@ -410,7 +442,7 @@ export default class Game {
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
     checkBonusCollisions() {
         this.bonuses = this.bonuses.filter(bonus => {
-            if (!bonus) return false; // Si pas de bonus, sortir du filtre
+            if (!bonus || bonus.x < this.player.x - 100 || bonus.x > this.player.x + 100) return true; // Ignore les bonus trop loin
 
             const playerLeft = this.player.x - this.player.w / 2;
             const playerRight = this.player.x + this.player.w / 2;
@@ -425,7 +457,17 @@ export default class Game {
             const isColliding = playerRight > bonusLeft && playerLeft < bonusRight && playerBottom > bonusTop && playerTop < bonusBottom;
 
             if (isColliding) {
-                this.score += bonus.type === 'green' ? 10 : 30;
+                const points = bonus.type === 'green' ? 10 : 30;
+                this.score += points;
+
+                // Ajoute un score flottant à la liste
+                this.floatingScores.push({
+                    x: bonus.x + bonus.size / 2,
+                    y: bonus.y,
+                    text: `+${points}`,
+                    opacity: 1,
+                    lifespan: 50 // Durée de vie en frames
+                });
 
                 const plateforme = this.objetsGraphiques.find(obj => obj instanceof Plateforme && obj.bonus === bonus);
                 if (plateforme) {
@@ -650,6 +692,7 @@ export default class Game {
         this.objetsGraphiques = [];
         this.bonuses = [];
         this.score = 0;
+        this.gameStarted = false;
 
         // Signaler que le jeu doit être redémarré
         if (this.onGameRestart) {

@@ -15,7 +15,7 @@ export default class Player extends ObjectGraphique {
         this.flameCanvas = document.createElement('canvas');
         this.flameCanvas.width = 40;
         this.flameCanvas.height = 100;
-        this.colorPlayer = "maroon";
+        this.colorPlayer = "#AC704E";
 
         this.initFlameAnimation();
     }
@@ -53,7 +53,6 @@ export default class Player extends ObjectGraphique {
     }
 
     drawBody(ctx) {
-        // BONNE PRATIQUE : on sauvegarde le contexte
         ctx.save();
 
         // tete
@@ -62,45 +61,82 @@ export default class Player extends ObjectGraphique {
         // yeux
         this.drawEyes(ctx);
 
-        //nez
+        // nez
+        this.drawNose(ctx);
+
+        // moustache
+        this.drawMoustache(ctx);
+
+        // oreille
+        this.drawEar(ctx);
+
+        // bouche
+        this.drawMouth(ctx);
+
+        // buste
+        this.drawBust(ctx);
+
+        // jambe
+        this.drawLeg(ctx);
+
+        // pied
+        this.drawFoot(ctx);
+
+        // bras
+        this.drawBras(ctx);
+
+        ctx.restore();
+    }
+
+    // oreille
+    drawEar(ctx) {
+        ctx.save();
+
+        ctx.fillStyle = "#BD4F42";
+        ctx.strokeStyle = this.colorPlayer;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.ellipse(-4, 16, 11, 14, Math.PI / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // nez
+    drawNose(ctx) {
+        ctx.save();
+
         drawCircleImmediat(ctx, 52, 32, 10, this.colorPlayer);
         drawCircleImmediat(ctx, 67, 32, 8, this.colorPlayer);
         drawCircleImmediat(ctx, 77, 32, 5, this.colorPlayer);
         ctx.fillStyle = "black";
         drawCircleImmediat(ctx, 87, 32, 6, "black");
 
-        ctx.fillStyle = this.colorPlayer;
-        // Corps du monstre (triangle équilateral avec bords arrondis, encore plus élargi)
-        ctx.beginPath();
-        ctx.moveTo(30, 35); // Point supérieur
-        ctx.arcTo(60, 80, 30, 85, 15); // Point droit avec bord arrondi
-        ctx.arcTo(30, 85, 0, 80, 15); // Point inférieur avec bord arrondi
-        ctx.arcTo(0, 80, 30, 35, 15); // Point gauche avec bord arrondi
-        ctx.closePath();
-        ctx.fill();
-
-        // Jambes du monstre (traits parallèles inclinés à 45 degrés)
-        ctx.strokeStyle = this.colorPlayer;
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(25, 70); // Début de la jambe
-        ctx.lineTo(60, 115); // Fin de la jambe
-        ctx.stroke();
-
-        // Pied du monstre (rectangle avec des angles arrondis, incliné)
-        ctx.save();
-        ctx.translate(55, 115);
-        ctx.rotate(Math.PI / -5.7); // Inclinaison à 45 degrés
-        this.drawPied(ctx, -2, 0, 20, 10, 5);
-        ctx.restore();
-
-        // Bras du monstre
-        this.drawBras(ctx, 40, 50, 35, 5, 3);
-
-        // BONNE PRATIQUE : on restore le contexte à la fin
         ctx.restore();
     }
 
+    // moustache
+    drawMoustache(ctx) {
+        ctx.save();
+        ctx.strokeStyle = "black";
+        ctx.lineWidth = 1;
+
+        // Trait milieu
+        ctx.beginPath();
+        ctx.moveTo(65, 32);
+        ctx.lineTo(50, 32);
+        ctx.stroke();
+
+        // Trait inférieur gauche
+        ctx.beginPath();
+        ctx.moveTo(65, 36);
+        ctx.lineTo(53, 42);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    // yeux
     drawEyes(ctx) {
         ctx.save();
 
@@ -114,9 +150,45 @@ export default class Player extends ObjectGraphique {
         ctx.restore();
     }
 
-    // Méthode pour dessiner un bras (rectangle avec des angles arrondis)
-    drawBras(ctx, x, y, width, height, radius) {
+    // bouche
+    drawMouth(ctx) {
         ctx.save();
+
+        ctx.strokeStyle = "#69442F";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(43, 35, 7, Math.PI * 0.5, Math.PI);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // buste
+    drawBust(ctx) {
+        ctx.save();
+
+        ctx.fillStyle = this.colorPlayer;
+        ctx.beginPath();
+        ctx.moveTo(30, 35); // Point supérieur
+        ctx.arcTo(60, 80, 30, 85, 15); // Point droit avec bord arrondi
+        ctx.arcTo(30, 85, 0, 80, 15); // Point inférieur avec bord arrondi
+        ctx.arcTo(0, 80, 30, 35, 15); // Point gauche avec bord arrondi
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+    }
+
+    // Bras
+    drawBras(ctx) {
+        ctx.save();
+
+        let x = 40;
+        let y = 50;
+        let width = 35;
+        let height = 5;
+        let radius = 3;
+
         ctx.translate(x, y);
         ctx.rotate(45 * Math.PI / 180);
         ctx.fillStyle = this.colorPlayer;
@@ -132,12 +204,37 @@ export default class Player extends ObjectGraphique {
         ctx.quadraticCurveTo(0, 0, radius, 0);
         ctx.closePath();
         ctx.fill();
+
         ctx.restore();
     }
 
-    // Méthode pour dessiner un rectangle avec des angles arrondis
-    drawPied(ctx, x, y, width, height, radius) {
+    // Jambe
+    drawLeg(ctx) {
         ctx.save();
+
+        ctx.strokeStyle = this.colorPlayer;
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(25, 70); // Début de la jambe
+        ctx.lineTo(60, 115); // Fin de la jambe
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // Pied
+    drawFoot(ctx) {
+        ctx.save();
+
+        ctx.translate(55, 115);
+        ctx.rotate(Math.PI / -5.7); // Inclinaison
+        let x = -2;
+        let y = 0;
+        let width = 20;
+        let height = 10;
+        let radius = 5;
+        ctx.fillStyle = this.colorPlayer;
+
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
         ctx.lineTo(x + width - radius, y);
