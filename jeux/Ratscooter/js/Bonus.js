@@ -5,7 +5,7 @@ export default class Bonus {
         this.size = 65;
         this.type = type; // vert ou bleu
         this.image = new Image();
-        this.image.src = this.type === 'green' ? 'jeux/images/pain.png' : 'jeux/images/croissant.png';
+        this.image.src = this.type === 'green' ? 'jeux/assets/Ratscooter/images/pain.png' : 'jeux/assets/Ratscooter/images/croissant.png';
     }
 
     load() {

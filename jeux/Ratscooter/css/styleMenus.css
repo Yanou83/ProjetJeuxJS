@@ -108,7 +108,8 @@
 /* Menu pause & game over*/
 
 /* Effet de flou pour le menu pause */
-#pause-menu-overlay, #game-over-menu-overlay {
+#pause-menu-overlay,
+#game-over-menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -126,7 +127,8 @@
 }
 
 /* Conteneur du menu pause et game over */
-#pause-menu, #game-over-menu {
+#pause-menu,
+#game-over-menu {
     text-align: center;
     background: rgba(255, 255, 255, 0.95);
     padding: 25px 40px;
@@ -137,7 +139,8 @@
 }
 
 /* Affichage fluide du menu */
-#pause-menu-overlay.visible, #game-over-menu-overlay.visible {
+#pause-menu-overlay.visible,
+#game-over-menu-overlay.visible {
     opacity: 1;
     visibility: visible;
 }
@@ -148,7 +151,8 @@
 }
 
 /* Titre */
-#pause-menu h1, #game-over-menu h1 {
+#pause-menu h1,
+#game-over-menu h1 {
     font-size: 2.8em;
     font-weight: bold;
     color: #222;
@@ -167,7 +171,8 @@
 }
 
 /* Style des boutons */
-#pause-menu button, #game-over-menu button {
+#pause-menu button,
+#game-over-menu button {
     font-size: 1.3em;
     padding: 12px 30px;
     margin-top: 15px;
@@ -182,11 +187,28 @@
     font-weight: bold;
 }
 
-#pause-menu button:hover, #game-over-menu button:hover {
+#pause-menu button:hover,
+#game-over-menu button:hover {
     background: linear-gradient(to right, #0056b3, #0088cc);
     transform: scale(1.05);
     box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
 }
+
+
+.sound-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.sound-icon:hover {
+    opacity: 0.7;
+}
+
 
 
 
@@ -195,6 +217,7 @@
         opacity: 0;
         transform: translate(-50%, -55%) scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);

@@ -21,7 +21,7 @@ export default class Game {
     userEmail = sessionStorage.getItem('userEmail'); // Email de l'utilisateur
 
 
-    constructor(canvas, selectedColor) {
+    constructor(canvas, selectedColor, soundActivated) {
         this.canvas = canvas;
         this.isMovementBlocked = false;
         // état du clavier
@@ -44,6 +44,8 @@ export default class Game {
         this.spacingIncreaseRate = 1.5; // Augmentation progressive de l'espacement
 
         this.floatingScores = []; // Tableau pour stocker les scores flottants
+
+        this.soundActivated = soundActivated; // Activer ou désactiver les sons
     }
 
     async init() {
@@ -336,8 +338,18 @@ export default class Game {
         this.ctx.fillStyle = "grey";
         this.ctx.fillRect(x, y, gaugeWidth, gaugeHeight);
 
+        // Détermine la couleur de la jauge en fonction du niveau de boost
+        let boostColor;
+        if (this.boost < 20) {
+            boostColor = "red";
+        } else if (this.boost < 60) {
+            boostColor = "orange";
+        } else {
+            boostColor = "green";
+        }
+
         // Dessine l'actuel niveau de boost
-        this.ctx.fillStyle = "green";
+        this.ctx.fillStyle = boostColor;
         this.ctx.fillRect(x, y, (this.boost / 100) * gaugeWidth, gaugeHeight);
 
         // Dessine les bordures de la jauge
@@ -418,25 +430,40 @@ export default class Game {
             if (!this.fallTimer) {
                 this.fallTimer = setTimeout(() => {
                     if (!this.menu.isPaused) { // Vérifier si le jeu est toujours en pause avant de déclencher gameOver
+                        this.createSoundEffect("chute");
+                    }
+                }, 800); // 0.8 seconde
+
+                this.gameOverTimer = setTimeout(() => {
+                    if (!this.menu.isPaused) {
                         this.gameOver();
                     }
                 }, 1000); // 1 seconde
             }
         } else {
             clearTimeout(this.fallTimer);
+            clearTimeout(this.gameOverTimer);
             this.fallTimer = null;
+            this.gameOverTimer = null;
         }
     }
 
     gameOver() {
         this.menu.isPaused = true;
-        console.log("Game Over - Score Final:", this.score); // Vérifier si le score est bon avant l'affichage du menu
-
         this.menu.showGameOverMenu(); // Afficher menu Game Over
 
         if (this.userEmail) {
             saveBestScore(this.score, this.userEmail, this.gameName);
         }
+    }
+
+    // Creation de son
+    createSoundEffect(type) {
+        if (this.soundActivated) {
+            const sound = new Audio(`/jeux/assets/Ratscooter/sounds/${type}.mp3`);
+            sound.play();
+        }
+        return;
     }
 
     // Vérifie les collisions avec les bonus pour les supprimer et attribuer les points
@@ -468,6 +495,13 @@ export default class Game {
                     opacity: 1,
                     lifespan: 50 // Durée de vie en frames
                 });
+
+                // Jouer le son de bonus
+                this.createSoundEffect('bonus_collected');
+                /** 
+                const bonusSoundInstance = new Audio('/jeux/assets/Ratscooter/sounds/bonus_collected.mp3');
+                bonusSoundInstance.play();
+                */
 
                 const plateforme = this.objetsGraphiques.find(obj => obj instanceof Plateforme && obj.bonus === bonus);
                 if (plateforme) {

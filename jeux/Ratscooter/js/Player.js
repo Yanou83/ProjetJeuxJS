@@ -10,7 +10,7 @@ export default class Player extends ObjectGraphique {
         this.couleur = couleur;
         this.angle = 0;
         this.vehicule = new Vehicule(this.couleur);
-        this.flameImageSrc = "/jeux/images/feu_boost.gif";
+        this.flameImageSrc = "/jeux/assets/Ratscooter/images/feu_boost.gif";
         this.flameAnimation = null;
         this.flameCanvas = document.createElement('canvas');
         this.flameCanvas.width = 40;

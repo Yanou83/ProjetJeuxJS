@@ -5,6 +5,7 @@ export default class MainMenu {
         this.canvas = canvas;
         this.startGameCallback = startGameCallback;
         this.selectedColor = "grey"; // Couleur initiale du scooter
+        this.soundActivated = true; // État initial du son
         this.createMenu();
     }
 
@@ -18,6 +19,25 @@ export default class MainMenu {
         this.menuContainer = document.createElement("div");
         this.menuContainer.id = "main-menu";
         document.body.appendChild(this.menuContainer);
+
+        // Icone son
+        this.soundButton = document.createElement("img");
+        this.soundButton.id = "sound-toggle";
+        this.soundButton.src = "jeux/assets/Ratscooter/images/son_on.png"; // Image par défaut
+        this.soundButton.alt = "Son activé";
+        this.soundButton.className = "sound-icon";
+
+        // Evenement clic sur l'icone son ON / OFF
+        this.soundButton.addEventListener("click", () => {
+            this.soundActivated = !this.soundActivated; // Inverser l’état du son
+            this.soundButton.src = this.soundActivated
+                ? "jeux/assets/Ratscooter/images/son_on.png"
+                : "jeux/assets/Ratscooter/images/son_off.png";
+            this.soundButton.alt = this.soundActivated ? "Son activé" : "Son désactivé";
+        });
+
+        // Ajouter l'icône au menu
+        this.menuContainer.appendChild(this.soundButton);
 
         // Ajouter un titre
         const title = document.createElement("h1");
@@ -48,7 +68,7 @@ export default class MainMenu {
         startButton.innerText = "▶ Démarrer le jeu";
         startButton.onclick = () => {
             this.hideMenu();
-            this.startGameCallback(this.selectedColor);
+            this.startGameCallback(this.selectedColor, this.soundActivated);
         };
         this.menuContainer.appendChild(startButton);
 

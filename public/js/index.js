@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const navMenu = document.querySelector('.nav-menu');
     const authButton = document.getElementById('auth-button');
     const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
     const startJeuButton = document.querySelector('#startJeu');
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     imagePresentation.src = 'public/assets/images/Ratscooter/ratscooter_presentation.png';
                     imagePresentation.alt = 'RatsooterPresentation';
                     productPresentationTitle.textContent = 'Ratscooter';
-                    productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville à bord de ton scooter et gare à la chute !\n\nA toi de jouer !';
+                    productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville de Paris à bord de ton scooter et gare à la chute !\n\nÀ toi de jouer !';
                 } else {
                     imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
                     imagePresentation.alt = '';

@@ -24,14 +24,14 @@ async function init() {
     // Créer une instance du menu principal
     let mainMenu = new MainMenu(canvas, startGame);
 
-    async function startGame(selectedColor) {
+    async function startGame(selectedColor, soundActivated) {
         // Cacher le menu principal
         mainMenu.hideMenu();
 
         // On cree une instance du jeu
-        let game = new Game(canvas, selectedColor);
+        let game = new Game(canvas, selectedColor, soundActivated);
 
-        game.onGameRestart = () => restartGame(selectedColor);
+        game.onGameRestart = () => restartGame(selectedColor, soundActivated);
 
         // ici on utilise await car la méthode init est asynchrone
         // typiquement dans init on charge des images, des sons, etc.
@@ -44,14 +44,14 @@ async function init() {
         game.start();
     }
 
-    async function restartGame(selectedColor) {
+    async function restartGame(selectedColor, soundActivated) {
         // Supprimer le canvas avant de recréer le jeu
         let ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Créer une nouvelle instance du jeu
-        let newGame = new Game(canvas, selectedColor);
-        newGame.onGameRestart = () => restartGame(selectedColor);
+        let newGame = new Game(canvas, selectedColor, soundActivated);
+        newGame.onGameRestart = () => restartGame(selectedColor, soundActivated);
 
         await newGame.init();
         await newGame.loadAssets();

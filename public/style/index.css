@@ -232,6 +232,17 @@ header nav .right button:hover {
     margin-bottom: 20px;
 }
 
+.play-button {
+    position: absolute;
+    z-index: 10;
+    top: 10px;
+    right: 10px;
+    font-size: 2em;
+    color: green;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .scores-list {
     width: 100%;
     margin-top: 20px;
@@ -271,6 +282,11 @@ footer div {
 footer p {
     cursor: pointer;
     color: #ccc;
+}
+
+footer p a{
+    text-decoration: none;
+    color: inherit;
 }
 
 @media (max-width: 700px) {
