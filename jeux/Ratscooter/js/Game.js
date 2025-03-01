@@ -167,6 +167,7 @@ export default class Game {
 
     mainAnimationLoop(timestamp) {
         if (this.menu.isPaused || !this.gameStarted) {
+            requestAnimationFrame(this.mainAnimationLoop.bind(this)); 
             return; // Ne pas continuer l'animation si le jeu est en pause ou n'a pas démarré
         }
 
@@ -273,9 +274,6 @@ export default class Game {
         this.ctx.restore();
     }
     
-    
-
-
     // Dessine les scores du joueur
     drawScore() {
         this.ctx.save();
