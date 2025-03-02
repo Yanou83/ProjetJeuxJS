@@ -45,6 +45,7 @@ export default class Game {
 
         this.floatingScores = []; // Tableau pour stocker les scores flottants
 
+        this.boostSound = null; // Stockage du son du boost
         this.soundActivated = soundActivated; // Activer ou désactiver les sons
     }
 
@@ -450,6 +451,7 @@ export default class Game {
 
     gameOver() {
         this.menu.isPaused = true;
+        this.boostSound = null; // Arrêter le son du boost
         this.menu.showGameOverMenu(); // Afficher menu Game Over
 
         if (this.userEmail) {
@@ -461,6 +463,10 @@ export default class Game {
     createSoundEffect(type) {
         if (this.soundActivated) {
             const sound = new Audio(`/jeux/assets/Ratscooter/sounds/${type}.mp3`);
+            if (type === 'boost') {
+                this.boostSound = sound;
+                this.boostSound.loop = true;
+            }
             sound.play();
         }
         return;
@@ -597,8 +603,20 @@ export default class Game {
             targetBoostSpeed = 10; // La vitesse supplémentaire temporaire due au boost
             this.boost -= 0.5; // Décrémente progressivement le boost
             this.boostActive = true;
+            if (this.soundActivated) {
+                if (!this.boostSound) {
+                    this.createSoundEffect("boost");
+                }
+                if (this.boostSound.paused) {
+                    this.boostSound.play(); // Jouer le son seulement s'il était arrêté
+                }
+            }
         } else {
             this.boostActive = false;
+            if (this.boostSound && !this.boostSound.paused) {
+                this.boostSound.pause();
+                this.boostSound.currentTime = 0; // Réinitialiser le son
+            }
         }
 
         // Transition fluide du boost (smooth start & end)
