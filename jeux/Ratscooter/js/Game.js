@@ -451,13 +451,19 @@ export default class Game {
 
     gameOver() {
         this.menu.isPaused = true;
-        this.boostSound = null; // Arrêter le son du boost
         this.menu.showGameOverMenu(); // Afficher menu Game Over
+
+        // Arrêter le son du boost si en cours
+        if (this.boostSound && !this.boostSound.paused) {
+            this.boostSound.pause();
+            this.boostSound.currentTime = 0; // Réinitialiser au début
+        }
 
         if (this.userEmail) {
             saveBestScore(this.score, this.userEmail, this.gameName);
         }
     }
+
 
     // Creation de son
     createSoundEffect(type) {

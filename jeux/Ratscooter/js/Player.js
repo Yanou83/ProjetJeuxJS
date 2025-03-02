@@ -73,6 +73,9 @@ export default class Player extends ObjectGraphique {
         // bouche
         this.drawMouth(ctx);
 
+        // queue
+        this.drawTail(ctx);
+
         // buste
         this.drawBust(ctx);
 
@@ -179,6 +182,41 @@ export default class Player extends ObjectGraphique {
         ctx.restore();
     }
 
+    // queue
+    drawTail(ctx) {
+        ctx.save();
+
+        const offsetX = 18;
+        const offsetY = 52;
+        const scale = 0.6;
+
+        ctx.strokeStyle = "#BD4F42";
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round"; // Arrondi 
+
+        // Départ de la queue 
+        const startX = offsetX + (-10 * scale);
+        const startY = offsetY + (40 * scale);
+
+        // Points de contrôle pour la courbe
+        const controlX1 = offsetX + (-40 * scale);
+        const controlY1 = offsetY + (25 * scale);
+        const controlX2 = offsetX + (-60 * scale);
+        const controlY2 = offsetY + (50 * scale);
+
+        // Fin de la queue
+        const endX = offsetX + (-80 * scale);
+        const endY = offsetY + (20 * scale);
+
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.bezierCurveTo(controlX1, controlY1, controlX2, controlY2, endX, endY);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+
     // Bras
     drawBras(ctx) {
         ctx.save();
@@ -233,7 +271,7 @@ export default class Player extends ObjectGraphique {
         let width = 20;
         let height = 10;
         let radius = 5;
-        ctx.fillStyle = this.colorPlayer;
+        ctx.fillStyle = "#BD4F42";
 
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
