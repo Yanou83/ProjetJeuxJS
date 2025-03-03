@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 :root {
-    --blue: red;
+    --red: red;
 }
 
 body {
@@ -26,7 +26,7 @@ header nav {
 header nav h1 {
     margin: 0;
     text-transform: uppercase;
-    color: var(--blue);
+    color: var(--red);
 }
 
 header nav .right {
@@ -48,9 +48,9 @@ header nav .right button {
     padding: 5px 15px;
     font-size: 16px;
     background-color: inherit;
-    border: 1px solid var(--blue);
+    border: 1px solid var(--red);
     border-radius: 5px;
-    color: var(--blue);
+    color: var(--red);
     cursor: pointer;
     transition: color 0.5s, background-color 0.5s;
     margin-right: 5px;
@@ -58,7 +58,7 @@ header nav .right button {
 
 header nav .right button:hover {
     color: inherit;
-    background-color: var(--blue);
+    background-color: var(--red);
 }
 
 .presentation {
@@ -102,15 +102,15 @@ header nav .right button:hover {
 
 
 .first .product-presentation button {
-    background-color: var(--blue);
+    background-color: var(--red);
     color: white;
-    border: 1px solid var(--blue);
+    border: 1px solid var(--red);
     transition: background-color 0.5s, color 0.5s;
 }
 
 .first .product-presentation button:hover {
     background-color: inherit;
-    color: var(--blue);
+    color: var(--red);
 }
 
 .first .product-presentation .scores {
@@ -121,7 +121,7 @@ header nav .right button:hover {
 }
 
 .first .product-presentation .scores:hover {
-    background-color: var(--blue);
+    background-color: var(--red);
     color: var(--new-color);
 }
 
@@ -276,7 +276,7 @@ footer {
 }
 
 footer div {
-    color: var(--blue);
+    color: var(--red);
 }
 
 footer p {
@@ -315,16 +315,16 @@ footer p a{
         padding: 5px 15px;
         font-size: 16px;
         background-color: inherit;
-        border: 1px solid var(--blue);
+        border: 1px solid var(--red);
         border-radius: 5px;
-        color: var(--blue);
+        color: var(--red);
         cursor: pointer;
         transition: color 0.5s, background-color 0.5s;
     }
 
     header nav .btn-acheter-horizontal:hover {
         color: inherit;
-        background-color: var(--blue);
+        background-color: var(--red);
     }
 
     .presentation .product-presentation h1 {
