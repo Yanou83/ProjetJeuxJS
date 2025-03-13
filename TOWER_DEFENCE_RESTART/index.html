@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tower Defense</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div id="notif"></div>
+        <div class="game-container">
+            <div class="game-header">
+                <div class="stats">
+                    <div class="lives">Vies: <span id="lives">20</span></div>
+                    <div class="money">Or: <span id="money">100</span></div>
+                    <div class="wave">Vague: <span id="wave">1</span></div>
+                </div>
+                <div class="controls">
+                    <button id="start-wave">Lancer la vague</button>
+                    <button id="exit">Exit</button>
+                    <!-- <button id="speed-toggle">Vitesse x1</button> -->
+                </div>
+            </div>
+            
+            <!-- Le plateu de jeu -->
+            <div id="game-area">
+                <div id="game-map" class="game-map"></div>
+            </div>
+
+            <!-- Le shop les div de chaque tour est créer dans le tower.js -->
+            <div id="tower-shop">
+            </div>
+
+        </div>
+
+        <script src="game.js"></script>
+        <script src="menu.js"></script>
+        <script src="ath.js"></script>
+        <script src="GameController.js"></script>
+        <script src="map.js"></script>
+
+        <script src="towerTypes.js"></script>
+        <script src="tower.js"></script>
+        <script src="bullet.js"></script>
+
+        <script src="wavesInformation.js"></script>
+        <script src="waves.js"></script>
+
+        <script src="enemyTypes.js"></script>
+        <script src="enemy.js"></script>
+        
+
+    </body>
+</html>
