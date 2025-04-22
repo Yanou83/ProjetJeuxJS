@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const firstSmallImage = document.querySelector('.small:first-child');
     const productPresentationTitle = document.querySelector('.product-presentation h1');
     const productPresentationText = document.querySelector('.product-presentation p');
+    let selectedGame = null;
+
 
 
     if (isAuthenticated) {
@@ -85,17 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
         secondSection.scrollIntoView({ behavior: 'smooth' });
     });
 
-    startJeuButton.addEventListener('click', () => {
-        if (firstSmallImage.classList.contains('active')) {
-            const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
-            if (isAuthenticated) {
-                window.location.href = '/Ratscooter';
-            } else {
-                sessionStorage.setItem('redirectAfterLogin', '/Ratscooter');
-                window.location.href = '/login';
-            }
-        }
-    });
+    const gameRoutes = {
+        Ratscooter: '/Ratscooter',
+        Jeu2: '/jeu2', 
+        Jeu3: '/jeu3'
+    };
 });
 
 function displayScores() {
