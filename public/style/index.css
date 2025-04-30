@@ -61,6 +61,14 @@ header nav .right button:hover {
     background-color: var(--red);
 }
 
+.startJeu:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(60%);
+}
+
+
 .presentation {
     padding: 30px 5%;
     margin-top: 5%;
@@ -284,7 +292,7 @@ footer p {
     color: #ccc;
 }
 
-footer p a{
+footer p a {
     text-decoration: none;
     color: inherit;
 }
@@ -341,7 +349,7 @@ footer p a{
         gap: 20px;
         padding: 1rem;
         height: auto;
-        align-items: center; 
+        align-items: center;
     }
 
     .divJeu {
@@ -352,14 +360,14 @@ footer p a{
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center; 
+        justify-content: center;
         position: relative;
     }
 
     .divJeu img {
-        max-width: 60%; 
+        max-width: 60%;
         height: auto;
-        opacity: 0.4; 
+        opacity: 0.4;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -370,7 +378,7 @@ footer p a{
         font-size: 1.5em;
         margin-bottom: 15px;
         position: relative;
-        z-index: 1; 
+        z-index: 1;
     }
 
     .scores-list {
@@ -380,7 +388,7 @@ footer p a{
         list-style: none;
         padding: 0;
         position: relative;
-        z-index: 2; 
+        z-index: 2;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -401,7 +409,8 @@ footer p a{
     .scores-list li span {
         font-size: 1.2em;
         flex: 1;
-        text-align: center; /* Centre le texte des scores */
+        text-align: center;
+        /* Centre le texte des scores */
     }
 
     footer {

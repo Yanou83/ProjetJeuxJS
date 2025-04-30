@@ -5,9 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const noGameSelected = document.querySelector('#noGameSelected');
     const smallImages = document.querySelectorAll('.small');
     const imagePresentation = document.querySelector('.image-presentation img');
-    const firstSmallImage = document.querySelector('.small:first-child');
     const productPresentationTitle = document.querySelector('.product-presentation h1');
     const productPresentationText = document.querySelector('.product-presentation p');
+    let selectedGame = null;
+    startJeuButton.disabled = true;
+
 
 
     if (isAuthenticated) {
@@ -17,42 +19,52 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateButton() {
-        const selected = Array.from(smallImages).some(div => div.classList.contains('active'));
-        if (selected) {
-            startJeuButton.textContent = 'Lancer le jeu';
-            startJeuButton.style.display = 'inline-block';
+        startJeuButton.style.display = 'inline-block';
+
+        console.log('selectedGame:', selectedGame); 
+
+        if (selectedGame && selectedGame !== '' && selectedGame !== null) {
+            startJeuButton.disabled = false;
             noGameSelected.style.display = 'none';
         } else {
-            startJeuButton.style.display = 'none';
+            startJeuButton.disabled = true;
             noGameSelected.style.display = 'block';
         }
     }
+
+
+
 
     smallImages.forEach(div => {
         div.addEventListener('click', () => {
             smallImages.forEach(d => d.classList.remove('active'));
             div.classList.add('active');
+
+            selectedGame = div.dataset.game || null;
             updateButton();
 
-            // Ajouter l'effet de transition
+            // Animation fade-out
             productPresentationTitle.classList.add('fade-out');
             productPresentationText.classList.add('fade-out');
             imagePresentation.classList.add('fade-out');
 
             setTimeout(() => {
-                if (firstSmallImage.classList.contains('active')) {
+                if (selectedGame === 'Ratscooter') {
                     imagePresentation.src = 'public/assets/images/Ratscooter/ratscooter_presentation.png';
                     imagePresentation.alt = 'RatsooterPresentation';
                     productPresentationTitle.textContent = 'Ratscooter';
-                    productPresentationText.textContent = 'Plongez dans l\'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures. \n\nParcours le plus de plateformes possibles dans la ville de Paris à bord de ton scooter et gare à la chute !\n\nÀ toi de jouer !';
+                    productPresentationText.textContent =
+                        "Plongez dans l'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures.\n\n" +
+                        "Parcours le plus de plateformes possibles dans la ville de Paris à bord de ton scooter et gare à la chute !\n\n" +
+                        "À toi de jouer !";
                 } else {
                     imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
                     imagePresentation.alt = '';
                     productPresentationTitle.textContent = 'Découvrir le jeu d\'une autre façon';
-                    productPresentationText.textContent = 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum odio eos beatae labore possimus. Pariatur ipsa, tempore optio placeat expedita minus cupiditate nulla iure quis error. A vitae quibusdam ipsum dolor sit amet consectetur adipisicing elit.';
+                    productPresentationText.textContent = 'Lorem ipsum dolor sit amet...';
                 }
 
-                // Retirer l'effet de fade-out et ajouter fade-in après le changement
+                // Animation fade-in
                 productPresentationTitle.classList.remove('fade-out');
                 productPresentationText.classList.remove('fade-out');
                 imagePresentation.classList.remove('fade-out');
@@ -60,20 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 productPresentationTitle.classList.add('fade-in');
                 productPresentationText.classList.add('fade-in');
                 imagePresentation.classList.add('fade-in');
-
             }, 100);
         });
     });
 
 
-    updateButton();
 
-    smallImages.forEach(div => {
-        div.addEventListener('click', () => {
-            smallImages.forEach(d => d.classList.remove('active'));
-            div.classList.add('active');
-        });
-    });
+
+    updateButton();
 
     // Charger et afficher les scores au chargement de la page
     displayScores();
@@ -86,15 +92,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     startJeuButton.addEventListener('click', () => {
-        if (firstSmallImage.classList.contains('active')) {
-            const isAuthenticated = sessionStorage.getItem('isAuthenticated') === 'true';
-            if (isAuthenticated) {
-                window.location.href = '/Ratscooter';
-            } else {
-                sessionStorage.setItem('redirectAfterLogin', '/Ratscooter');
-                window.location.href = '/login';
-            }
-        }
+        if (!selectedGame || selectedGame == null) return;
+        const gameRoutes = {
+            Ratscooter: '/Ratscooter',
+            Jeu2: '/jeu2',
+            Jeu3: '/jeu3'
+        };
+        window.location.href = gameRoutes[selectedGame] || '/';
     });
 });
 
@@ -128,11 +132,11 @@ function displayScores() {
         // Afficher les scores des joueurs dans l'ordre
         scoresArray.forEach((user, position) => {
             scoresList.innerHTML += `
-                <li>
-                    <span>${position + 1}. ${user.pseudo}</span>
-                    <span>${user.score}</span>
-                </li>
-            `;
+            <li>
+                <span>${position + 1}. ${user.pseudo}</span>
+                <span>${user.score}</span>
+            </li>
+        `;
         });
     });
 }
