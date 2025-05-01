@@ -3,7 +3,7 @@ import Plateforme from "./Plateforme.js";
 import ObjetSouris from "./ObjetSouris.js";
 import { initListeners } from "./ecouteurs.js";
 import Menu from "./Menu.js";
-import { getBestScore, saveBestScore } from "./utils.js";
+import { getBestScore, saveBestScore } from '../../scores.js';
 
 export default class Game {
     objetsGraphiques = [];
