@@ -28,6 +28,10 @@ app.get('/Ratscooter', (req, res) => {
     res.sendFile(path.join(__dirname, 'jeux/Ratscooter/Ratscooter.html'));
 });
 
+app.get('/Crazybowling', (req, res) => {
+    res.sendFile(path.join(__dirname, 'jeux/Crazybowling/Crazybowling.html'));
+});
+
 // Gestion des erreurs 404 (toutes les autres routes)
 app.use((req, res) => {
     res.status(404).sendFile(path.join(__dirname, 'pages/404.html'));
