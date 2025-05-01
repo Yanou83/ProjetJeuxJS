@@ -9,7 +9,18 @@ let pins; // Array to hold the pin meshes
 let score = 0;
 let bowlingBall; // Reference to the ball mesh
 
+const handleAuth = () => {
+    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+    const userEmail = sessionStorage.getItem("userEmail");
+    if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
+        window.location.href = "/login";
+        return;
+    }
+    console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
+}
+
 const startRenderLoop = (engine, canvas) => {
+    handleAuth();
     engine.runRenderLoop(() => {
         if (sceneToRender && sceneToRender.activeCamera) {
             sceneToRender.render();
