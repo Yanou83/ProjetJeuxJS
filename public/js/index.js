@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateButton() {
         startJeuButton.style.display = 'inline-block';
-
-        console.log('selectedGame:', selectedGame); 
-
         if (selectedGame && selectedGame !== '' && selectedGame !== null) {
             startJeuButton.disabled = false;
             noGameSelected.style.display = 'none';

@@ -1,4 +1,4 @@
-import { getBestScore } from './utils.js'; // Import getBestScore function
+import { getBestScore } from '../../scores.js'; 
 
 export default class Menu {
     constructor(canvas, game) {
