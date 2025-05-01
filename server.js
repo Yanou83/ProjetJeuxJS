@@ -7,6 +7,8 @@ const PORT = 5173;
 // Servir les fichiers statiques du dossier "public"
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Servir les fichiers statiques du dossier "pages"
 app.use(express.static(path.join(__dirname, 'pages')));
 
@@ -25,7 +27,7 @@ app.get('/login', (req, res) => {
 
 
 app.get('/Ratscooter', (req, res) => {
-    res.sendFile(path.join(__dirname, '/jeux/Ratscooter/Ratscooter.html'));
+    res.sendFile(path.join(__dirname, 'public/jeux/Ratscooter/Ratscooter.html'));
 });
 
 app.get('/Crazybowling', (req, res) => {
