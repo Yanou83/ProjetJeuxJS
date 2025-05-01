@@ -67,7 +67,7 @@ const displaySessionScore = () => {
 
     const scoreDisplay = document.createElement("div");
     scoreDisplay.id = "sessionScoreDisplay";
-    scoreDisplay.innerText = `Session Score: ${sessionScore}`;
+    scoreDisplay.innerText = `Session Score Test: ${sessionScore}`;
     scoreDisplay.style.position = "absolute";
     scoreDisplay.style.top = "10px"; // Position the score at the top
     scoreDisplay.style.right = "10px"; // Position it on the top right
