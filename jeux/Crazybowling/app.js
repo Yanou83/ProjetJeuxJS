@@ -6,98 +6,85 @@ let retryButton;
 let replayButton;
 let canPressZ = true; // Flag to prevent multiple 'Z' presses
 let pins; // Array to hold the pin meshes
-let score = 0;
+let score = 0; // Current round score (reset after each round)
+let sessionScore = 0; // Total session score (accumulated score across rounds)
 let bowlingBall; // Reference to the ball mesh
 
 let crazybowlingLocaldev = false;
 
+const saveSessionScore = (sessionScore) => {
+    localStorage.setItem('sessionScore', sessionScore);
+};
+
+// Load session score from localStorage
+const loadSessionScore = () => {
+    const savedSessionScore = localStorage.getItem('sessionScore');
+    return savedSessionScore ? parseInt(savedSessionScore) : 0;
+};
+
+// Handle authentication (same as your original code)
 const handleAuth = () => {
     if (crazybowlingLocaldev){
         return true
     }
     else{
         const isAuthenticated = sessionStorage.getItem("isAuthenticated");
-    const userEmail = sessionStorage.getItem("userEmail");
-    if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
-        window.location.href = "/login";
-        return false;
+        const userEmail = sessionStorage.getItem("userEmail");
+        if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
+            window.location.href = "/login";
+            return false;
+        }
+        console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
+        localStorage.removeItem('sessionScore');
+        return true
     }
-    console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
-    return true
+};
+
+const getCurrentEmailPlayer = () => {
+    const userEmail = sessionStorage.getItem("scoreKey");
+    if (userEmail){
+        return userEmail
+    }
+    else{
+        return "No email Found"
     }
 }
 
-const startRenderLoop = (engine, canvas) => {
-    const auth_object = handleAuth();
-    if (auth_object){
-        engine.runRenderLoop(() => {
-            if (sceneToRender && sceneToRender.activeCamera) {
-                sceneToRender.render();
-            }
-        });
-    }
+
+// Initialize the session score
+const initializeScores = () => {
+    sessionScore = loadSessionScore(); // Load total session score
+    displaySessionScore();
 };
 
-const createReplayButton = () => {
-    replayButton = document.createElement("button");
-    replayButton.innerText = "Rejouer";
-    replayButton.style.position = "absolute";
-    replayButton.style.top = "60%"; // Move button down a bit
-    replayButton.style.left = "50%";
-    replayButton.style.transform = "translate(-50%, -50%)";
-    replayButton.style.padding = "10px 20px";
-    replayButton.style.fontSize = "1.5em";
-    replayButton.style.cursor = "pointer";
-    document.body.appendChild(replayButton);
-
-    replayButton.addEventListener("click", () => {
-        window.location.reload(); // Reload the page to replay
-    });
-};
-
-const createRetryButton = () => {
-    // Remove existing retry button if it exists
-    if (retryButton) {
-        retryButton.remove();
-    }
-    
-    retryButton = document.createElement("button");
-    retryButton.innerText = "Continuer pour faire tomber les balles restantes";
-    retryButton.style.position = "absolute";
-    retryButton.style.top = "60%"; // Move button down a bit
-    retryButton.style.left = "50%";
-    retryButton.style.transform = "translate(-50%, -50%)";
-    retryButton.style.padding = "10px 20px";
-    retryButton.style.fontSize = "1.5em";
-    retryButton.style.cursor = "pointer";
-    document.body.appendChild(retryButton);
-
-    retryButton.addEventListener("click", () => {
-        resetBall(); // Reset ball and allow retry
-        retryButton.style.display = "none"; // Hide retry button
-    });
-};
-
-const displayScore = () => {
-    // Remove existing score display if it exists
-    const existingScoreDisplay = document.getElementById("scoreDisplay");
+// Display the session score (total score)
+const displaySessionScore = () => {
+    // Remove existing session score display if it exists
+    const existingScoreDisplay = document.getElementById("sessionScoreDisplay");
     if (existingScoreDisplay) {
         existingScoreDisplay.remove();
     }
-    
+
     const scoreDisplay = document.createElement("div");
-    scoreDisplay.id = "scoreDisplay";
-    scoreDisplay.innerText = `Score ${score}`;
+    scoreDisplay.id = "sessionScoreDisplay";
+    scoreDisplay.innerText = `Session Score: ${sessionScore}`;
     scoreDisplay.style.position = "absolute";
-    scoreDisplay.style.top = "70%"; // Move score display below the button
-    scoreDisplay.style.left = "50%";
-    scoreDisplay.style.transform = "translate(-50%, -50%)";
-    scoreDisplay.style.fontSize = "2em";
+    scoreDisplay.style.top = "10px"; // Position the score at the top
+    scoreDisplay.style.right = "10px"; // Position it on the top right
+    scoreDisplay.style.fontSize = "1.5em";
     scoreDisplay.style.fontWeight = "bold";
     scoreDisplay.style.color = "black"; // Adjust color as needed
     document.body.appendChild(scoreDisplay);
 };
 
+// Update the session score after each ball shot
+const updateSessionScore = (pinsDown) => {
+    sessionScore += pinsDown; // Add the number of pins knocked down to session score
+    saveSessionScore(sessionScore); // Save the updated session score to localStorage
+    displaySessionScore(); // Update the display
+};
+
+// Check fallen pins and update session score
 const checkFallenPins = () => {
     let fallenCount = 0;
     if (pins) {
@@ -114,11 +101,11 @@ const checkFallenPins = () => {
             }
         });
         score = fallenCount;
-        displayScore();
+        updateSessionScore(score); // Update session score after each shot
+        displaySessionScore();
 
-        // Create "Retry" or "Replay" button based on the score
+        // If all pins knocked down, reset for the next round
         if (score === 10) {
-            // All pins knocked down, show replay button
             setTimeout(() => {
                 createReplayButton();
                 alert("You knocked all the pins down!");
@@ -142,13 +129,92 @@ const resetBall = async () => {
         bowlingBall.dispose();
         bowlingBall = null;
     }
-    
+
     // Create a new ball
     await createBall(scene);
     canPressZ = true; // Allow 'Z' press again
 };
 
-// Create the bowling ball
+const createReturnButton = () => {
+    const returnButton = document.createElement("button");
+    returnButton.innerText = "Retour au menu principal";
+    
+    returnButton.style.position = "absolute";
+    returnButton.style.top = "10px"; 
+    returnButton.style.left = "10px"; 
+    returnButton.style.padding = "10px 20px";
+    returnButton.style.fontSize = "1.2em";
+    returnButton.style.cursor = "pointer";
+    returnButton.style.backgroundColor = "#4CAF50"; 
+    returnButton.style.color = "white"; 
+    returnButton.style.border = "none";
+    returnButton.style.borderRadius = "5px";
+
+    document.body.appendChild(returnButton);
+
+    returnButton.addEventListener("click", () => {
+        window.location.href = "/"; 
+    });
+};
+
+createReturnButton();
+
+// Start render loop
+const startRenderLoop = (engine, canvas) => {
+    const auth_object = handleAuth();
+    if (auth_object){
+        localStorage.removeItem("sessionScore");
+        engine.runRenderLoop(() => {
+            if (sceneToRender && sceneToRender.activeCamera) {
+                sceneToRender.render();
+            }
+        });
+    }
+};
+
+// Create Replay Button
+const createReplayButton = () => {
+    replayButton = document.createElement("button");
+    replayButton.innerText = "Rejouer";
+    replayButton.style.position = "absolute";
+    replayButton.style.top = "60%"; // Move button down a bit
+    replayButton.style.left = "50%";
+    replayButton.style.transform = "translate(-50%, -50%)";
+    replayButton.style.padding = "10px 20px";
+    replayButton.style.fontSize = "1.5em";
+    replayButton.style.cursor = "pointer";
+    document.body.appendChild(replayButton);
+
+    replayButton.addEventListener("click", () => {
+        window.location.reload(); // Reload the page to replay
+    });
+};
+
+// Create Retry Button
+const createRetryButton = () => {
+    // Remove existing retry button if it exists
+    if (retryButton) {
+        retryButton.remove();
+    }
+    
+    retryButton = document.createElement("button");
+    retryButton.innerText = "Continuer pour faire tomber les balles restantes";
+    retryButton.style.position = "absolute";
+    retryButton.style.top = "60%"; // Move button down a bit
+    retryButton.style.left = "50%";
+    retryButton.style.transform = "translate(-50%, -50%)";
+    retryButton.style.padding = "10px 20px";
+    retryButton.style.fontSize = "1.5em";
+    retryButton.style.cursor = "pointer";
+    document.body.appendChild(retryButton);
+
+    retryButton.addEventListener("click", () => {
+        resetBall(); // Reset ball and allow retry
+        retryButton.style.display = "none"; // Hide retry button
+    });
+};
+
+// Create bowling ball
 async function createBall(scene) {
     try {
         const result = await BABYLON.SceneLoader.ImportMeshAsync("", Assets.meshes.bowlingBall_glb.rootUrl, Assets.meshes.bowlingBall_glb.filename, scene);
@@ -178,6 +244,7 @@ async function createBall(scene) {
     }
 }
 
+// Create the scene
 const createScene = async () => {
     // This creates a basic Babylon Scene object (non-mesh)
     scene = new BABYLON.Scene(engine);
@@ -296,6 +363,7 @@ async function createPins(scene) {
     return pins;
 }
 
+// Initialize the game
 const initFunction = async () => {
     globalThis.HK = await HavokPhysics();
 
@@ -335,8 +403,8 @@ const initFunction = async () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     canvas = document.getElementById("renderCanvas");
+    initializeScores(); // Initialize score from localStorage
     initFunction().then(() => {
         console.log("Bowling game initialized successfully");
     });
 });
-
