@@ -41,3 +41,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Serveur lancé sur http://localhost:${PORT}`);
 });
+
+module.exports = app;
