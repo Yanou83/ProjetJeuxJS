@@ -9,23 +9,33 @@ let pins; // Array to hold the pin meshes
 let score = 0;
 let bowlingBall; // Reference to the ball mesh
 
+let crazybowlingLocaldev = false;
+
 const handleAuth = () => {
-    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+    if (crazybowlingLocaldev){
+        return true
+    }
+    else{
+        const isAuthenticated = sessionStorage.getItem("isAuthenticated");
     const userEmail = sessionStorage.getItem("userEmail");
     if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
         window.location.href = "/login";
-        return;
+        return false;
     }
     console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
+    return true
+    }
 }
 
 const startRenderLoop = (engine, canvas) => {
-    handleAuth();
-    engine.runRenderLoop(() => {
-        if (sceneToRender && sceneToRender.activeCamera) {
-            sceneToRender.render();
-        }
-    });
+    const auth_object = handleAuth();
+    if (auth_object){
+        engine.runRenderLoop(() => {
+            if (sceneToRender && sceneToRender.activeCamera) {
+                sceneToRender.render();
+            }
+        });
+    }
 };
 
 const createReplayButton = () => {
