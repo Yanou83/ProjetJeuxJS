@@ -22,18 +22,19 @@ class GameController {
                 // Déduire l'argent ici
                 this.game.money -= towerData.cost;
                 this.game.gameAth.updateHeaderATH();
-                // this.game.gameAth.notify("message")
 
                 // Construir la tour
                 const tower = new Tower(this.game.gameAth.selectedTowerData, x, y, this.game.gameMap, this.game);
                 tower.buildTower();
                 this.game.gameMap.grid[y][x] = "T";
-                console.log(this.game.gameMap.grid);
+                // console.log(this.game.gameMap.grid);
             }else{
                 this.game.gameAth.notify("Vous n'avez pas assez d'argent pour construire cette tour");
+                this.game.audio.playSound("error",1);
             }
         }else{
             this.game.gameAth.notify("Vous ne pouvez pas construire une tour ici");
+            this.game.audio.playSound("error",1);
         }
     }
 
@@ -68,7 +69,7 @@ class GameController {
 
 
         // Créer la tour fantomatique sous la souris
-        console.log("showFakeTower")
+        // console.log("showFakeTower")
         this.fackTower = document.createElement('div');
         this.fackTower.id = "fakeTower";
         this.fackTower.style.position = 'absolute';
@@ -109,7 +110,7 @@ class GameController {
     // Cache la tour fantome et sa range
     hideFakeTower(e){
         if (!this.game.gameAth.selectedTowerData) return; // Vérifie si une tour est sélectionnée
-        console.log("hideFakeTower")
+        // console.log("hideFakeTower")
         this.fackTower.remove();
         this.FackRange.remove();
     }

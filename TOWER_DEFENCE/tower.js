@@ -18,7 +18,7 @@ class Tower {
     buildTower() {
         this.game.audio.playSound("build",1);
         // Construit la tour
-        console.log("buildTower");
+        // console.log("buildTower");
         this.elementTower = document.createElement('div');
         this.elementTower.className = `tower tower-${this.type.name}`;
         this.elementTower.style.position = 'absolute';
@@ -55,7 +55,6 @@ class Tower {
         
         document.addEventListener('click', () => this.hideTowerControlPanel());
         
-
         // Créer l'élément de portée
         this.rangeElement = document.createElement('div'); 
         this.rangeElement.className = 'tower-range';
@@ -81,8 +80,6 @@ class Tower {
         this.sellButton.addEventListener('click', () => this.sellTower());
         this.elementTower.appendChild(this.sellButton);
 
-
-
         // Ecouteur pour montrer la range
         this.elementTower.addEventListener('mouseenter', () => this.showRange());
         this.elementTower.addEventListener('mouseleave', () => this.hideRange());
@@ -93,7 +90,6 @@ class Tower {
     showRange() {
         this.rangeElement.style.display = 'block';
     }
-
     
     hideRange() {
         this.rangeElement.style.display = 'none';

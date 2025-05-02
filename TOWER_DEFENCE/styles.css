@@ -133,7 +133,7 @@ body {
 
 .tower-tooltip {
     background-image:url('assets/post-it/Post-it.png');
-    background-size: 100% 100%;
+    background-size: 100% auto;
     padding: 60px 20px 20px 20px;
     z-index: 1000;
 }
@@ -158,6 +158,9 @@ body {
 }
 
 /* Menu */
+.menu {
+    text-align: center;
+}
 .menu button{
     all: unset;
     background-image: url('assets/boutons/papierDechirer.png');

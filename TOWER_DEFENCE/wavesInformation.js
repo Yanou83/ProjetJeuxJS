@@ -4,29 +4,9 @@
 //         enemies: [
 //             { type: 'basic', delay: 0 },
 //             { type: 'fast', delay: 1000 },
-//             { type: 'tank', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 }
-//         ],
-//         reward: 15
-//     },
-//     {enemies: [
-//             { type: 'basic', delay: 0 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'basic', delay: 1000 },
-//             { type: 'fast', delay: 3000 },
-//             { type: 'fast', delay: 1000 },
-//             { type: 'fast', delay: 1000 }
-//         ],
-//         reward: 20
-//     },
+//             { type: 'tank', delay: 1000 }
+//         ]
+//     }
 // ];
 
 const wavesInformation = [

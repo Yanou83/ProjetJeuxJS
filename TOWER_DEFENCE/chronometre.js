@@ -23,7 +23,7 @@ class Chronometre {
             this.intervalId = setInterval(() => {
                 if (this.isRunning) {
                     const elapsedTime = Date.now() - this.startTime;
-                    this.timerElement.textContent = this.formatTime(elapsedTime);
+                    this.timerElement.textContent = "Chrono : "  +this.formatTime(elapsedTime);
                 }
             }, 100);
         }
@@ -46,6 +46,6 @@ class Chronometre {
         const minutes = Math.floor(milliseconds / 60000) % 60;
         const hours = Math.floor(milliseconds / 3600000);
         
-        return `Chrono : ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 }

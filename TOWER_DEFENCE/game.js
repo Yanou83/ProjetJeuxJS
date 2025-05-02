@@ -14,16 +14,14 @@ class Game {
         this.money = 50;
         
         this.waveInProgress = false;
-        this.selectedTower = null;
         
         this.isPaused = false;
-        this.gameOver = false;
         this.lastUpdate = 0;
         this.gameFPS = 60;
     }
     
     start() {
-        console.log("Start Game")
+        // console.log("Start Game")
         this.audio = new GameAudio();
         this.gameMap = new GameMap();
         this.gameAth = new GameAth(this);
@@ -40,7 +38,6 @@ class Game {
         const deltaTime = timestamp - this.lastUpdate;
         // Mettre à jour le jeu tt les 60 secondes en fonction de la vitesse
         if (deltaTime > (1000 / this.gameFPS) && this.isPaused === false) {
-            // console.log("Game Loop")
             this.update(timestamp);
             this.lastUpdate = timestamp;
         } 
@@ -49,24 +46,17 @@ class Game {
 
     update(){    
         // Vérifier si le joueur a perdu
-        if (this.lives <= 0 && !this.gameOver) {
+        if (this.lives <= 0) {
             this.menu.showDefeatScreen();
-            this.gameOver = true; // Marquer le jeu comme terminé
-            this.isPaused = true; // Mettre le jeu en pause
-            return; // Sortir de la fonction update pour éviter de continuer à mettre à jour
+            this.isPaused = true;
+            return; // On mets fin à la mise à jour du jeu car perdu
         }
 
         // Vérifie si le joueur à gagner
-        if(this.waves.waveNumber >= wavesInformation.length-1 && this.enemies.length==0 && !this.gameOver && this.waves.queueEnnemis.length == 0){
-            console.log("Victoire")
+        if(this.waves.waveNumber >= wavesInformation.length-1 && this.enemies.length==0 && this.waves.queueEnnemis.length == 0){
+            // console.log("Victoire")
             this.menu.showVictoryScreen();
-            this.gameOver = true; // Marquer le jeu comme terminé
-            this.isPaused = true; // Mettre le jeu en pause
-        }
-
-        // Ne pas continuer la mise à jour si le jeu est terminé
-        if (this.gameOver) {
-            return;
+            this.isPaused = true;
         }
 
         // Vérifier si la vague est terminer 
@@ -99,7 +89,7 @@ class Game {
                         this.towers[i].shoot(this.enemies[j]);
                         // console.log("Tirer sur l'ennemie")
                         this.towers[i].timeBeforeNextShot = this.towers[i].fireRate;
-                        break;// car on ne tire que sur le premier ennemie et un seul à la fois
+                        break;// on ne tire que sur le premier ennemie et un seul à la fois
                     }
 
                 }
@@ -116,7 +106,7 @@ class Game {
     }
 
     restart() {
-        console.log("Redémarrage du jeu...");
+        // console.log("Redémarrage du jeu...");
         
         // 1. Nettoyer les éléments du DOM enneies et tours et projectiles
         this.enemies.forEach(enemy => { // Suppression de l'affichage ennemies in game
@@ -143,14 +133,15 @@ class Game {
         }
         this.waves.spawnInProgress = false;
         
-        // 3. Réinitialiser les variables d'état
+        // 3. Réinitialiser les variables d'état du jeu
+        this.isPaused = false;
+        this.lastUpdate = 0;
         this.enemies = [];// Suppression des ennemies
         this.waves.queueEnnemis = [];
         this.towers = []; // Suppression des tours
         this.projectiles = [];
         this.lives = 20;
         this.money = 50;
-        this.gameOver = false;
         this.waveInProgress = false;
         
         // 5. Réinitialiser les vagues
@@ -166,6 +157,7 @@ class Game {
         // // 4. Réinitialiser l'interface
         this.gameAth.updateHeaderATH();
         
+        // Réinitialiser le chronomètre
         if (this.chronometre) {
             this.chronometre.reset();
             this.chronometre.start(); 
@@ -176,8 +168,8 @@ class Game {
     }
 
     pause(){
-        console.log("Pause")
-        this.waves.timeoutIds.forEach(id => console.log(id));
+        // console.log("Pause")
+        // this.waves.timeoutIds.forEach(id => console.log(id));
         if (this.isPaused) {
             this.isPaused = false;
         } else {
@@ -192,8 +184,6 @@ class Game {
 
 
 }
-
-
 
 
 // Initialiser le jeu lorsque la page est chargée

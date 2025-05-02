@@ -26,23 +26,6 @@ class GameMap {
     
     createPath() {
         // On trace le chemin plutot qu'une matrice comme cella on à un ordre
-        // this.path = [
-        //     { x: 0, y: 5 },   // Point de départ
-        //     { x: 4, y: 5 },   
-        //     { x: 4, y: 2 },   // Montée
-        //     { x: 8, y: 2 },   
-        //     { x: 8, y: 8 },   // Descente
-        //     { x: 4, y: 8 },  
-        //     { x: 4, y: 2 },  // Montée
-        //     { x: 16, y: 2 },  
-        //     { x: 16, y: 5 },  
-        //     { x: 19, y: 5 }   // Point d'arrivée
-        // ];
-        // { x: 0, y:5 }
-        // { x: 4, y:0 }
-        // { x: 35, y:5 }
-        //{ x: 4, y:17 }
-
         this.path = [
             { x: 0, y:5 },   // Point de départ
             { x: 4, y: 5 },
@@ -56,10 +39,6 @@ class GameMap {
             { x: 25, y:  2},     
             { x: 25, y:  17}     // Point d'arrivée
         ];
-        
-        if (!this.isValidPath(this.path)) {
-            return;
-        }
 
         // Marquer le chemin sur la grille
         for (let i = 0; i < this.path.length - 1; i++) {
@@ -83,10 +62,6 @@ class GameMap {
                 }
             }
         }
-    }
-
-    isValidPath(path) {// A faire plus tard
-        return true;
     }
     
     renderMap() {

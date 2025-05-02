@@ -1,4 +1,3 @@
-// A voir si je laisse pas la possibilité de lancer les va  gue toutes à la suite
 class Waves {
     constructor(game) {
         this.game = game;
@@ -6,7 +5,7 @@ class Waves {
         this.waveIsActive = false;
 
         this.nbEnneniesCreated = 0;
-        this.timeoutIds = []; // Stocker les IDs des timeouts pour restar le jeux
+        this.timeoutIds = []; // Stocker les IDs des timeouts pour restarte le jeux
 
         this.startWaveButton = document.getElementById("start-wave");
         this.startWaveButton.addEventListener('click', () => this.nextWave());
@@ -17,9 +16,9 @@ class Waves {
     startWave() {
         this.waveIsActive = true;
         this.nbEnneniesCreated = 0;
-        console.log("start Wave : "+this.waveNumber)
+        // console.log("start Wave : "+this.waveNumber)
         this.updateATHWave();
-        // afficher les ennemies de waveinformation
+        // Afficher les ennemies de waveinformation
         this.addOnQueueEnnemis();
     }
 
@@ -36,7 +35,7 @@ class Waves {
     }
 
     addOnQueueEnnemis() {
-        console.log("lancement du spawn des ennemie de la vague "+this.waveNumber) 
+        // console.log("lancement du spawn des ennemie de la vague "+this.waveNumber) 
 
         let ennemisOnWave = wavesInformation[this.waveNumber].enemies
         let delay = 0;// délai entre chaque ennemie parmaétrer dans le fichier waveInformation
@@ -46,11 +45,11 @@ class Waves {
             enemy.spawnDelay = delay;
             this.queueEnnemis.push(enemy)
         }
-        console.log(this.queueEnnemis)
+        // console.log(this.queueEnnemis)
     }
 
     updateATHWave() {
-        console.log(this.game.currentWave)
+        // console.log(this.game.currentWave)
         this.game.currentWave++;
         this.game.gameAth.updateHeaderATH();
     }

@@ -1,4 +1,3 @@
-// bullet
 class Bullet {
     constructor(tower, target, game) {
         this.game = game;
@@ -12,7 +11,7 @@ class Bullet {
             x:this.tower.type.bullet.adjustBulletStartPosition.x*game.gameMap.cellSize, 
             y:this.tower.type.bullet.adjustBulletStartPosition.y*game.gameMap.cellSize};
 
-        this.x = this.tower.pixelX + this.game.gameMap.cellSize/2 + this.adjustBulletStartPosition.x;// Centre this.game.gameMap.cellSize/2
+        this.x = this.tower.pixelX + this.game.gameMap.cellSize/2 + this.adjustBulletStartPosition.x;
         this.y = this.tower.pixelY + this.adjustBulletStartPosition.y;
         this.size = 10;
 
@@ -20,7 +19,6 @@ class Bullet {
     }
 
     createBullet() {
-        // console.log("createBullet")
         this.elementProjectile = document.createElement('div');
         this.elementProjectile.className = 'bullet';
         this.elementProjectile.style.position = 'absolute';
@@ -56,8 +54,6 @@ class Bullet {
         }
 
     }
-
-
 
     remove() {
         this.elementProjectile.remove();

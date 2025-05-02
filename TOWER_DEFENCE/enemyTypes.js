@@ -8,7 +8,7 @@ const enemyTypes = {
         size : 20,
         gold : 5,
         damageToBase : 1,
-        img: "assets/enemy/rond.png", // Chemin vers l'image
+        img: "assets/enemy/rond.png",
     },
     fast: {
         name: "Triangle rapide",

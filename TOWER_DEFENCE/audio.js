@@ -12,7 +12,8 @@ class GameAudio {
             selectTower: new Audio('assets/audios/selectedSound.mp3'),
             build: new Audio('assets/audios/build.mp3'),
             victory: new Audio('assets/audios/victory.mp3'),
-            gameOver: new Audio('assets/audios/gameOver.mp3')
+            gameOver: new Audio('assets/audios/gameOver.mp3'),
+            error: new Audio('assets/audios/error.mp3')
         };
     }
 

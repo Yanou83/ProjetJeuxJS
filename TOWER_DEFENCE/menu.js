@@ -55,7 +55,6 @@ class Menu {
     startGame() {
         this.hide();
         this.game.chronometre.start();
-        console.log(this.game.audio.playBackgroundMusic());
         this.game.audio.playBackgroundMusic();
     }
 
@@ -103,15 +102,15 @@ class Menu {
 
     showVictoryScreen() {
         this.game.audio.playSound("victory", 0.5);
-        // Ne pas changer isPaused ici, car on l'a déjà fait dans update()
         if (this.game.chronometre) {
             this.game.chronometre.stop(); // Stop the timer on victory
         }
         // Chrono
-        console.log("Chrono : ");
-        console.log(this.game.chronometre.timerElement.textContent);
+        const chronoText = this.game.chronometre.timerElement.textContent;
+
         this.menuElement.innerHTML = `
             <h1 class="game-title">Victory</h1>
+            <p class="game-chrono">${chronoText}</p>
             <button id="restartBtn" class="menu-btn">Restart</button>
             <button id="exitBtn" class="menu-btn">Exit</button>
         `;
