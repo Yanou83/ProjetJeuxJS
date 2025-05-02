@@ -54,7 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         "Plongez dans l'univers de Ratscooter, un jeu palpitant qui vous tiendra en haleine pendant des heures.\n\n" +
                         "Parcours le plus de plateformes possibles dans la ville de Paris à bord de ton scooter et gare à la chute !\n\n" +
                         "À toi de jouer !";
-                } else {
+                } else if (selectedGame === 'TowerDefense') {
+                    imagePresentation.src = 'jeux/TOWER_DEFENSE/assets/TowerDefense.png';
+                    imagePresentation.alt = 'TowerDefense';
+                    productPresentationTitle.textContent = 'Tower Defense';
+                    productPresentationText.textContent = "Plongez dans l'univers de Tower Defense, un jeu de stratégie captivant qui mettra vos compétences tactiques à l'épreuve.\n\n" +
+                        "Placez vos tours défensives avec intelligence, gérez vos ressources et repoussez les vagues d'ennemis qui menacent votre territoire. Chaque décision compte !\n\n" +
+                        "À vous de défendre !";
+                } 
+                else {
                     imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
                     imagePresentation.alt = '';
                     productPresentationTitle.textContent = 'Découvrir le jeu d\'une autre façon';
@@ -100,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayScores() {
-    const gameTitles = ["Ratscooter", "Jeu2", "Jeu3"]; // Liste des jeux
+    const gameTitles = ["Ratscooter", "Jeu2", "TowerDefense"]; // Liste des jeux
     const divJeux = document.querySelectorAll('.divJeu');
 
     divJeux.forEach((divJeu, index) => {
