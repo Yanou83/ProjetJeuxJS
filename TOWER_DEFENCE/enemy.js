@@ -190,6 +190,7 @@ class Enemy {
 
     // Quand l'ennemi arrive à la fin du chemin il inflige des dégats à la base du joueur
     decreasePlayerHealth(){
+        this.game.audio.playSound("hitBase",1);
         this.game.lives -= enemyTypes[this.type].damageToBase;
         this.game.gameAth.updateHeaderATH();
     }
