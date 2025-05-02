@@ -71,7 +71,7 @@ Vous pouvez facilement personnaliser le jeu en modifiant :
 - `wavesInformation.js` pour configurer les vagues  
 - `map.js` pour changer le parcours des ennemis  
 
--- 
+---
 
 ## Ressources
 
