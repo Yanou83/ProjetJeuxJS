@@ -9,8 +9,10 @@ let pins; // Array to hold the pin meshes
 let score = 0; // Current round score (reset after each round)
 let sessionScore = 0; // Total session score (accumulated score across rounds)
 let bowlingBall; // Reference to the ball mesh
-
-let crazybowlingLocaldev = false;
+let round = 1;
+let crazybowlingLocaldev = true;
+let maxRounds = 3;  // Set the maximum rounds to 3 (you can change this as needed)
+let shotsTaken = 0;  // Track the number of shots per round
 
 const saveSessionScore = (sessionScore) => {
     localStorage.setItem('sessionScore', sessionScore);
@@ -25,9 +27,8 @@ const loadSessionScore = () => {
 // Handle authentication (same as your original code)
 const handleAuth = () => {
     if (crazybowlingLocaldev){
-        return true
-    }
-    else{
+        return true;
+    } else {
         const isAuthenticated = sessionStorage.getItem("isAuthenticated");
         const userEmail = sessionStorage.getItem("userEmail");
         if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
@@ -36,30 +37,28 @@ const handleAuth = () => {
         }
         console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
         localStorage.removeItem('sessionScore');
-        return true
+        return true;
     }
 };
 
 const getCurrentEmailPlayer = () => {
     const userEmail = sessionStorage.getItem("scoreKey");
     if (userEmail){
-        return userEmail
-    }
-    else{
-        return "No email Found"
+        return userEmail;
+    } else {
+        return "No email Found";
     }
 }
-
 
 // Initialize the session score
 const initializeScores = () => {
     sessionScore = loadSessionScore(); // Load total session score
     displaySessionScore();
+    displayRound();
 };
 
 // Display the session score (total score)
 const displaySessionScore = () => {
-    // Remove existing session score display if it exists
     const existingScoreDisplay = document.getElementById("sessionScoreDisplay");
     if (existingScoreDisplay) {
         existingScoreDisplay.remove();
@@ -67,7 +66,7 @@ const displaySessionScore = () => {
 
     const scoreDisplay = document.createElement("div");
     scoreDisplay.id = "sessionScoreDisplay";
-    scoreDisplay.innerText = `Session Score Test: ${sessionScore}`;
+    scoreDisplay.innerText = `Session Score: ${sessionScore}`;
     scoreDisplay.style.position = "absolute";
     scoreDisplay.style.top = "10px"; // Position the score at the top
     scoreDisplay.style.right = "10px"; // Position it on the top right
@@ -77,11 +76,43 @@ const displaySessionScore = () => {
     document.body.appendChild(scoreDisplay);
 };
 
+const displayRound = () => {
+    let roundDisplay = document.getElementById("roundDisplay");
+
+    if (!roundDisplay) {
+        roundDisplay = document.createElement("div");
+        roundDisplay.id = "roundDisplay";
+        roundDisplay.style.position = "absolute";
+        roundDisplay.style.top = "30px"; // Position the score at the top
+        roundDisplay.style.right = "10px"; // Position it on the top right
+        roundDisplay.style.fontSize = "1.5em";
+        roundDisplay.style.fontWeight = "bold";
+        roundDisplay.style.color = "black"; // Adjust color as needed
+        document.body.appendChild(roundDisplay);
+    }
+
+    // Get the current round from localStorage
+    const currentRound = loadRound();
+
+    // Update the round display text
+    roundDisplay.innerText = `Round : ${currentRound}`;
+};
+
+const saveRound = (round) => {
+    localStorage.setItem("currentRound", round);
+};
+
+const loadRound = () => {
+    const savedRound = localStorage.getItem("currentRound");
+    return savedRound ? parseInt(savedRound) : 1; // Default to round 1 if not found
+};
+
 // Update the session score after each ball shot
 const updateSessionScore = (pinsDown) => {
     sessionScore += pinsDown; // Add the number of pins knocked down to session score
     saveSessionScore(sessionScore); // Save the updated session score to localStorage
     displaySessionScore(); // Update the display
+    displayRound();
 };
 
 // Check fallen pins and update session score
@@ -89,7 +120,6 @@ const checkFallenPins = () => {
     let fallenCount = 0;
     if (pins) {
         pins.forEach(pin => {
-            // Check if the pin has rotated significantly on the X or Z axis
             if (pin.rotationQuaternion) {
                 const rotation = pin.rotationQuaternion.toEulerAngles();
                 if (Math.abs(BABYLON.Tools.ToDegrees(rotation.x)) > 15 || 
@@ -100,27 +130,79 @@ const checkFallenPins = () => {
                 }
             }
         });
-        score = fallenCount;
-        updateSessionScore(score); // Update session score after each shot
-        displaySessionScore();
+    }
 
-        // If all pins knocked down, reset for the next round
-        if (score === 10) {
-            setTimeout(() => {
-                createReplayButton();
-                alert("You knocked all the pins down!");
-            }, 1000);
-        } else {
-            // Not all pins knocked down, show retry button
-            setTimeout(() => {
-                createRetryButton();
-            }, 1000);
-        }
+    // Make sure to update score correctly by only adding the fallen pins once
+    score = fallenCount;
+
+    // Update session score after counting fallen pins
+    updateSessionScore(score);
+    shotsTaken++;
+
+    // End the round if two shots are taken or all pins are knocked down
+    if (shotsTaken >= 2 || fallenCount === 10) {
+        setTimeout(() => {
+            createReplayButton();
+            alert(fallenCount === 10 ? "Strike! You knocked all the pins down!" : "Round over, you took two shots!");
+            incrementRound(); // Use the new function to increment the round correctly
+            resetRound(); // Reset shots for the next round
+        }, 1000);
+    } else {
+        // Show retry button for the second shot
+        setTimeout(() => {
+            createRetryButton();
+            alert("Shoot your second shot!");
+        }, 1000);
     }
 };
 
-// Reset the ball's position for the next shot
+const incrementRound = () => {
+    if (round < maxRounds) {
+        round++;
+        saveRound(round); // Save the new round value to localStorage
+        displayRound(); // Update the round display
+    } else {
+        stopGame(); // Stop the game if maxRounds is reached
+    }
+};
+
+const createNewGame = () => {
+    replayButton = document.createElement("button");
+    replayButton.innerText = "Restart a new game";
+    replayButton.style.position = "absolute";
+    replayButton.style.top = "60%"; // Move button down a bit
+    replayButton.style.left = "50%";
+    replayButton.style.transform = "translate(-50%, -50%)";
+    replayButton.style.padding = "10px 20px";
+    replayButton.style.fontSize = "1.5em";
+    replayButton.style.cursor = "pointer";
+    document.body.appendChild(replayButton);
+
+    replayButton.addEventListener("click", () => {
+        // Reload the page to proceed to the next round
+        window.location.reload(); // Reloads the page but retains localStorage values
+    });
+}
+const stopGame = () => {
+    alert("Game Over! You've completed all the rounds.");
+    clearLocalStorage();
+    createNewGame();  // Optionally show a replay button or another way to restart
+    resetGame();  // Reset game elements, optionally disable further actions
+};
+
+const resetRound = () => {
+    shotsTaken = 0; // Reset the shot counter for the next round
+    score = 0; // Reset the score for the next round
+    displayRound(); // Update round display
+    displaySessionScore(); // Update session score display
+};
+
 const resetBall = async () => {
+    if (shotsTaken >= 2) {
+        console.log("Round over, no more shots allowed.");
+        return; // Exit early if it's already the second shot
+    }
+
     // If there's an existing ball, dispose of it and its physics
     if (bowlingBall) {
         if (bowlingBall.physicsImpostor) {
@@ -135,6 +217,7 @@ const resetBall = async () => {
     canPressZ = true; // Allow 'Z' press again
 };
 
+// Create the return button
 const createReturnButton = () => {
     const returnButton = document.createElement("button");
     returnButton.innerText = "Retour au menu principal";
@@ -175,7 +258,7 @@ const startRenderLoop = (engine, canvas) => {
 // Create Replay Button
 const createReplayButton = () => {
     replayButton = document.createElement("button");
-    replayButton.innerText = "Rejouer";
+    replayButton.innerText = "Round Suivant";
     replayButton.style.position = "absolute";
     replayButton.style.top = "60%"; // Move button down a bit
     replayButton.style.left = "50%";
@@ -186,7 +269,8 @@ const createReplayButton = () => {
     document.body.appendChild(replayButton);
 
     replayButton.addEventListener("click", () => {
-        window.location.reload(); // Reload the page to replay
+        // Reload the page to proceed to the next round
+        window.location.reload(); // Reloads the page but retains localStorage values
     });
 };
 
@@ -198,7 +282,7 @@ const createRetryButton = () => {
     }
     
     retryButton = document.createElement("button");
-    retryButton.innerText = "Continuer pour faire tomber les balles restantes";
+    retryButton.innerText = "Second shot";
     retryButton.style.position = "absolute";
     retryButton.style.top = "60%"; // Move button down a bit
     retryButton.style.left = "50%";
@@ -212,6 +296,46 @@ const createRetryButton = () => {
         resetBall(); // Reset ball and allow retry
         retryButton.style.display = "none"; // Hide retry button
     });
+};
+
+// Create New Round Button
+const createNewRoundButton = () => {
+    const newRoundButton = document.createElement("button");
+    newRoundButton.innerText = "Nouvelle partie";
+    newRoundButton.style.position = "absolute";
+    newRoundButton.style.top = "70%"; // Move button down a bit more
+    newRoundButton.style.left = "50%";
+    newRoundButton.style.transform = "translate(-50%, -50%)";
+    newRoundButton.style.padding = "10px 20px";
+    newRoundButton.style.fontSize = "1.5em";
+    newRoundButton.style.cursor = "pointer";
+    document.body.appendChild(newRoundButton);
+
+    newRoundButton.addEventListener("click", () => {
+        resetGame(); // Reset the game to start a new round
+    });
+};
+
+// Reset the game to start a new round
+const resetGame = async () => {
+    // Reset pins
+    if (pins) {
+        pins.forEach(pin => pin.setEnabled(true)); // Enable all pins again
+    }
+    
+    // Reset shots and score
+    shotsTaken = 0;
+    score = 0;
+    displaySessionScore();
+    displayRound(); // Ensure session score display is recreated
+
+    // Reset the round and start from 1 again
+    round = 1;
+    saveRound(round);
+    displayRound();
+
+    // Reset the ball
+    await resetBall();
 };
 
 // Create bowling ball
@@ -246,46 +370,24 @@ async function createBall(scene) {
 
 // Create the scene
 const createScene = async () => {
-    // This creates a basic Babylon Scene object (non-mesh)
     scene = new BABYLON.Scene(engine);
-
-    // This creates and positions a free camera (non-mesh)
     const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
-
-    // This targets the camera to scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
-
-    // This attaches the camera to the canvas
     camera.attachControl(canvas, true);
 
-    // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-
-    // Enable physics engine
     const gravityVector = new BABYLON.Vector3(0, -9.81, 0);
     const physicsPlugin = new BABYLON.HavokPlugin();
     scene.enablePhysics(gravityVector, physicsPlugin);
-
-    // Default intensity is 1. Let's dim the light a small amount
     light.intensity = 0.7;
 
-    // Create bowling lane
-    const lane = BABYLON.MeshBuilder.CreateGround("lane", {
-        width: 6,
-        height: 50
-    }, scene);
+    const lane = BABYLON.MeshBuilder.CreateGround("lane", { width: 6, height: 50 }, scene);
     lane.position = new BABYLON.Vector3(0, 0, 4);
-    new BABYLON.PhysicsAggregate(lane, BABYLON.PhysicsShapeType.BOX, {
-        mass: 0
-    }, scene);
+    new BABYLON.PhysicsAggregate(lane, BABYLON.PhysicsShapeType.BOX, { mass: 0 }, scene);
 
-    // Create bowling pins
     await createPins(scene);
-
-    // Create the bowling ball
     await createBall(scene);
-    
-    // Set up keyboard controls
+
     setupKeyboardControls(scene);
 
     return scene;
@@ -304,7 +406,7 @@ const setupKeyboardControls = (scene) => {
                         if (bowlingBall) bowlingBall.position.x -= 0.1;
                         break;
                     case "z":
-                        if (canPressZ && bowlingBall) {
+                        if (canPressZ && bowlingBall && shotsTaken < 2) {  // Only allow shots if less than 2 shots have been taken
                             if (bowlingBall.physicsAggregate && bowlingBall.physicsAggregate.body) {
                                 // Use the direct reference we stored on the ball
                                 console.log("Throwing ball");
@@ -335,7 +437,7 @@ async function createPins(scene) {
     bowlingPin.setEnabled(false);
 
     // Pin positions
-    const ZPinShiftFactor = 15;
+    const ZPinShiftFactor = 19; // Factor so it shifts the pins to
     const YPinShiftFactor = 2;
     const pinPositions = [
         new BABYLON.Vector3(0, 0, 5 + ZPinShiftFactor),
@@ -363,6 +465,14 @@ async function createPins(scene) {
     return pins;
 }
 
+const initializeRound = () => {
+    round = loadRound(); // Load the saved round
+    if (round > maxRounds) {
+        stopGame();  // Automatically stop the game if the round exceeds maxRounds
+    }
+    displayRound(); // Display the round number
+};
+
 // Initialize the game
 const initFunction = async () => {
     globalThis.HK = await HavokPhysics();
@@ -385,7 +495,6 @@ const initFunction = async () => {
     };
 
     engine = await asyncEngineCreation();
-
     const engineOptions = engine.getCreationOptions?.();
     if (!engineOptions || engineOptions.audioEngine !== false) {
         // Audio engine initialization (if needed)
@@ -401,9 +510,16 @@ const initFunction = async () => {
     });
 };
 
+const clearLocalStorage = () => {
+    localStorage.removeItem("sessionScore");
+    localStorage.removeItem("currentRound");
+    console.log("LocalStorage cleared before starting the game.");
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     canvas = document.getElementById("renderCanvas");
     initializeScores(); // Initialize score from localStorage
+    initializeRound(); // Initialize the round number
     initFunction().then(() => {
         console.log("Bowling game initialized successfully");
     });
