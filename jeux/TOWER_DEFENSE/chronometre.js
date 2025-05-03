@@ -48,4 +48,10 @@ class Chronometre {
         
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
+    
+    getTimeInSeconds() {
+        if (!this.isRunning) return 0;
+        const elapsedTime = Date.now() - this.startTime;
+        return Math.floor(elapsedTime / 1000);
+    }
 }

@@ -2,9 +2,9 @@
 //     null, // Vague 0 n'existe pas
 //     {
 //         enemies: [
-//             { type: 'basic', delay: 0 },
-//             { type: 'fast', delay: 1000 },
-//             { type: 'tank', delay: 1000 }
+//             { type: 'basic', delay: 0 }
+//             // { type: 'fast', delay: 1000 },
+//             // { type: 'tank', delay: 1000 }
 //         ]
 //     }
 // ];

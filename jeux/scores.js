@@ -48,4 +48,37 @@ function getBestScore(userEmail, gameName) {
     return userData.scores?.[gameName] || 0;
 }
 
-export { saveBestScore, getBestScore };
+// Enregistre dans localStorage le meilleur score (valeur minimale)
+function saveMinScore(score, userEmail, gameName) {
+    if (!userEmail || !gameName) {
+        console.error("Données utilisateur ou jeu invalides pour l'enregistrement du score.");
+        return;
+    }
+
+    // Récupérer les données de l'utilisateur dans localStorage
+    let storedUserData = localStorage.getItem(userEmail);
+
+    if (!storedUserData) {
+        console.error(`Utilisateur avec l'email ${userEmail} non trouvé.`);
+        return;
+    }
+
+    let userData = JSON.parse(storedUserData);
+
+    // Vérifier si le champ `scores` existe, sinon l'initialiser
+    if (!userData.scores) {
+        userData.scores = {};
+    }
+
+    // Ajouter ou mettre à jour le score du jeu
+    // Pour un score de temps, on veut le MINIMUM (temps plus court = meilleur)
+    if (!userData.scores[gameName] || score < userData.scores[gameName]) {
+        userData.scores[gameName] = score;
+
+        // Sauvegarde dans localStorage
+        localStorage.setItem(userEmail, JSON.stringify(userData));
+        console.log(`Nouveau meilleur temps enregistré pour ${gameName}: ${score}`);
+    }
+}
+
+export { saveBestScore, getBestScore,saveMinScore };

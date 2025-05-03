@@ -104,9 +104,9 @@ class Menu {
 
     showVictoryScreen() {
         this.game.audio.playSound("victory", 0.5);
-        if (this.game.chronometre) {
-            this.game.chronometre.stop(); // Stop the timer on victory
-        }
+        // if (this.game.chronometre) {
+        //     this.game.chronometre.stop(); // Stop the timer on victory
+        // }
         // Chrono
         const chronoText = this.game.chronometre.timerElement.textContent;
 
@@ -132,9 +132,9 @@ class Menu {
 
     showDefeatScreen() {
         this.game.audio.playSound("gameOver", 0.5);
-        if (this.game.chronometre) {
-            this.game.chronometre.stop(); // Stop the timer on defeat
-        }
+        // if (this.game.chronometre) {
+        //     this.game.chronometre.stop(); // Stop the timer on defeat
+        // }
         
         // Ne pas changer isPaused ici, car on l'a déjà fait dans update()
         this.menuElement.innerHTML = `

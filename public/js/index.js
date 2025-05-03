@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const gameRoutes = {
             Ratscooter: '/Ratscooter',
             Jeu2: '/jeu2',
-            Jeu3: '/jeu3'
+            TowerDefense: '/jeux/TOWER_DEFENSE/index.html'
         };
         window.location.href = gameRoutes[selectedGame] || '/';
     });
@@ -127,11 +127,17 @@ function displayScores() {
             }
         }
 
-        // Trier scoresArray par ordre décroissant
+        // Trier scoresArray par ordre approprié selon le jeu
         scoresArray.sort((a, b) => {
             if (a.score === 'N/A') return 1;
             if (b.score === 'N/A') return -1;
-            return b.score - a.score;
+            // Pour Tower Defense, trier par ordre croissant (temps les plus courts d'abord)
+            if (gameTitles[index] === "TowerDefense") {
+                return a.score - b.score; // Ordre croissant
+            } 
+            else {
+                return b.score - a.score; // Ordre décroissant
+            }
         });
 
         // Afficher les scores des joueurs dans l'ordre

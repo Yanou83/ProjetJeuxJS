@@ -1,3 +1,5 @@
+import { saveMinScore } from '../scores.js';
+
 class Game {
     constructor() {
         this.gameMap = null;
@@ -49,14 +51,25 @@ class Game {
         if (this.lives <= 0) {
             this.menu.showDefeatScreen();
             this.isPaused = true;
+            if (this.chronometre) {
+                this.chronometre.stop();// Stop the timer on defeat
+            }
             return; // On mets fin à la mise à jour du jeu car perdu
         }
 
         // Vérifie si le joueur à gagner
         if(this.waves.waveNumber >= wavesInformation.length-1 && this.enemies.length==0 && this.waves.queueEnnemis.length == 0){
-            // console.log("Victoire")
             this.menu.showVictoryScreen();
             this.isPaused = true;
+
+            // Gestion du score
+            const finalScore = this.chronometre.getTimeInSeconds(); // Récupérer le score final
+            saveMinScore(finalScore, this.userEmail, this.gameName);
+            
+            if (this.chronometre) {
+                this.chronometre.stop(); // Stop the timer on victory
+            }
+            return; // On mets fin à la mise à jour du jeu car gagné
         }
 
         // Vérifier si la vague est terminer 
@@ -188,7 +201,19 @@ class Game {
 
 // Initialiser le jeu lorsque la page est chargée
 window.addEventListener('load', () => {
+    // Vérifier si l'utilisateur est authentifié
+    const isAuthenticated = sessionStorage.getItem("isAuthenticated");
+    const userEmail = sessionStorage.getItem("userEmail");
+    if (isAuthenticated === "false" || isAuthenticated === null || !userEmail) {
+        window.location.href = "/login";
+        return;
+    }
+    console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail);
+
     window.game = new Game();
-    window.game.menu = new Menu(this.game);
-    game.start();
+    // Sauvgarder l'email de l'utilisateur dans le jeu
+    window.game.userEmail = userEmail;
+    window.game.gameName = "TowerDefense";
+    window.game.menu = new Menu(window.game);
+    window.game.start();
 });
