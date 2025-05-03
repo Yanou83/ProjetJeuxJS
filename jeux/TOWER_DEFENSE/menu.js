@@ -97,7 +97,9 @@ class Menu {
     }
 
     exitGame() {
-        window.close();
+        // Redirection vers la page d'accueil
+        const origin = window.location.origin;
+        window.location.href = origin; 
     }
 
     showVictoryScreen() {
