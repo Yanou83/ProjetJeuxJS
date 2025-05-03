@@ -416,10 +416,6 @@ export default class Game {
         // Regénère la jauge de boost
         this.regenerateBoost();
 
-        // Supprime les objets hors écran
-        //this.removeOffscreenObjects();
-
-
         // Vérifie si le joueur est tombé de la plateforme
         this.checkFall();
     }
@@ -433,13 +429,13 @@ export default class Game {
                     if (!this.menu.isPaused) { // Vérifier si le jeu est toujours en pause avant de déclencher gameOver
                         this.createSoundEffect("chute");
                     }
-                }, 800); // 0.8 seconde
+                }, 1000); // 1 seconde
 
                 this.gameOverTimer = setTimeout(() => {
                     if (!this.menu.isPaused) {
                         this.gameOver();
                     }
-                }, 1000); // 1 seconde
+                }, 1200); // 1.2 seconde
             }
         } else {
             clearTimeout(this.fallTimer);
@@ -510,10 +506,6 @@ export default class Game {
 
                 // Jouer le son de bonus
                 this.createSoundEffect('bonus_collected');
-                /** 
-                const bonusSoundInstance = new Audio('/jeux/assets/Ratscooter/sounds/bonus_collected.mp3');
-                bonusSoundInstance.play();
-                */
 
                 const plateforme = this.objetsGraphiques.find(obj => obj instanceof Plateforme && obj.bonus === bonus);
                 if (plateforme) {
