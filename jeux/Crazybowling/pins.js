@@ -85,7 +85,6 @@ export const checkFallenPins = () => {
   if (shotsTaken >= 2 || fallenPinsSet.size === 10) {
     setTimeout(() => {
       createReplayButton()
-      alert(fallenPinsSet.size === 10 ? "Strike! You knocked all the pins down!" : "Round over, you took two shots!")
       incrementRound()
       resetRound()
     }, 1000)
@@ -93,7 +92,6 @@ export const checkFallenPins = () => {
     // Prepare for second shot
     setTimeout(() => {
       createRetryButton()
-      alert("Shoot your second shot!")
     }, 1000)
   }
 }

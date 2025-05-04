@@ -49,7 +49,7 @@ export const displaySessionScore = () => {
   scoreDisplay.style.right = "10px" // Position it on the top right
   scoreDisplay.style.fontSize = "1.5em"
   scoreDisplay.style.fontWeight = "bold"
-  scoreDisplay.style.color = "black" // Adjust color as needed
+  scoreDisplay.style.color = "white" // Adjust color as needed
   document.body.appendChild(scoreDisplay)
 }
 
@@ -61,11 +61,11 @@ export const displayRound = () => {
     roundDisplay = document.createElement("div")
     roundDisplay.id = "roundDisplay"
     roundDisplay.style.position = "absolute"
-    roundDisplay.style.top = "30px" // Position the score at the top
+    roundDisplay.style.top = "40px" // Position the score at the top
     roundDisplay.style.right = "10px" // Position it on the top right
     roundDisplay.style.fontSize = "1.5em"
     roundDisplay.style.fontWeight = "bold"
-    roundDisplay.style.color = "black" // Adjust color as needed
+    roundDisplay.style.color = "white" // Adjust color as needed
     document.body.appendChild(roundDisplay)
   }
 
@@ -73,7 +73,7 @@ export const displayRound = () => {
   const currentRound = loadRound()
 
   // Update the round display text
-  roundDisplay.innerText = `Round: ${currentRound}`
+  roundDisplay.innerText = `Manche: ${currentRound} / ${maxRounds}`
 }
 
 // Update the session score after each ball shot
@@ -98,7 +98,6 @@ export const incrementRound = () => {
 
 // Stop the game
 export const stopGame = () => {
-  alert("Game Over! You've completed all the rounds.")
   clearLocalStorage()
   createNewGame() // Show a replay button to restart
 }

@@ -1,4 +1,4 @@
-const crazybowlingLocaldev = false;
+const crazybowlingLocaldev = true;
 
 // Handle authentication
 export const handleAuth = () => {
@@ -12,7 +12,7 @@ export const handleAuth = () => {
       return false
     }
     console.log("UTILISATEUR AUTHENTIFIÉ : ", userEmail)
-    localStorage.removeItem("sessionScore")
+    //localStorage.removeItem("sessionScore")
     return true
   }
 }
@@ -38,8 +38,7 @@ export const createReturnButton = () => {
   returnButton.style.padding = "10px 20px"
   returnButton.style.fontSize = "1.2em"
   returnButton.style.cursor = "pointer"
-  returnButton.style.backgroundColor = "#4CAF50"
-  returnButton.style.color = "white"
+  returnButton.style.color = "black"
   returnButton.style.border = "none"
   returnButton.style.borderRadius = "5px"
 

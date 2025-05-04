@@ -12,7 +12,7 @@ export const createReplayButton = () => {
   }
 
   replayButton = document.createElement("button")
-  replayButton.innerText = "Round Suivant"
+  replayButton.innerText = "Manche suivante"
   replayButton.style.position = "absolute"
   replayButton.style.top = "60%" // Move button down a bit
   replayButton.style.left = "50%"
@@ -36,7 +36,7 @@ export const createRetryButton = () => {
   }
 
   retryButton = document.createElement("button")
-  retryButton.innerText = "Second shot"
+  retryButton.innerText = "Deuxième tir"
   retryButton.style.position = "absolute"
   retryButton.style.top = "60%" // Move button down a bit
   retryButton.style.left = "50%"
