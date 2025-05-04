@@ -30,6 +30,7 @@ app.get('/Ratscooter', (req, res) => {
 
 app.get('/Crazybowling', (req, res) => {
     res.sendFile(path.join(__dirname, 'jeux/Crazybowling/Crazybowling.html'));
+    
 });
 
 // Gestion des erreurs 404 (toutes les autres routes)

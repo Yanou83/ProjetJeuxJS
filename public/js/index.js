@@ -61,7 +61,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     productPresentationText.textContent = "Plongez dans l'univers de Tower Defense, un jeu de stratégie captivant qui mettra vos compétences tactiques à l'épreuve.\n\n" +
                         "Placez vos tours défensives avec intelligence, gérez vos ressources et repoussez les vagues d'ennemis qui menacent votre territoire. Chaque décision compte !\n\n" +
                         "À vous de défendre !";
-                } 
+                } else if (selectedGame === 'Crazybowling'){
+                    imagePresentation.src = 'public/assets/images/Crazybowling/crazybowling-presentation.png';
+                    imagePresentation.alt = 'Crazybowling';
+                    productPresentationTitle.textContent = 'Crazybowling';
+                    productPresentationText.textContent = "Laissez-vous tenter par un bowling en 10 manches, avec une vraie physique qui vous rappellera de bons souvenirs d'enfance !";
+                }
+                
                 else {
                     imagePresentation.src = 'https://resource.logitechg.com/e_trim/w_600,h_550,c_limit,q_auto:best,f_auto,dpr_auto,d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png?v=1';
                     imagePresentation.alt = '';
