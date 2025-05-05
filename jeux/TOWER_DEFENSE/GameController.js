@@ -98,8 +98,8 @@ class GameController {
         this.FackRange.style.width = `${this.game.gameAth.selectedTowerData.range * 2}px`;
         this.FackRange.style.height = `${this.game.gameAth.selectedTowerData.range * 2}px`;
         this.FackRange.style.borderRadius = '50%';
-        this.FackRange.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-        this.FackRange.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        this.FackRange.style.border = '2px solid rgb(0, 0, 0, 0.5)';
+        this.FackRange.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
         this.FackRange.style.left = `${pixelX + this.game.gameMap.cellSize / 2 - this.game.gameAth.selectedTowerData.range}px`;
         this.FackRange.style.top = `${pixelY + this.game.gameMap.cellSize / 2 - this.game.gameAth.selectedTowerData.range}px`;
 

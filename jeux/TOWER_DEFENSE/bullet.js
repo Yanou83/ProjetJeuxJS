@@ -13,7 +13,7 @@ class Bullet {
 
         this.x = this.tower.pixelX + this.game.gameMap.cellSize/2 + this.adjustBulletStartPosition.x;
         this.y = this.tower.pixelY + this.adjustBulletStartPosition.y;
-        this.size = 10;
+        this.size = this.tower.type.bullet.size;
 
         this.createBullet();
     }
