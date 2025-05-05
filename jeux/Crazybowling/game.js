@@ -3,7 +3,7 @@ import { initializeScores, displayRound, loadRound, stopGame } from "./score.js"
 let engine
 let scene
 let sceneToRender
-const maxRounds = 5
+const maxRounds = 10;
 
 // Initialize the game
 export const initializeGame = async (canvas) => {
