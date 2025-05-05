@@ -1,4 +1,4 @@
-const crazybowlingLocaldev = true;
+const crazybowlingLocaldev = false;
 
 // Handle authentication
 export const handleAuth = () => {
