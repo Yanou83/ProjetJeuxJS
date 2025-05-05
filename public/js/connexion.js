@@ -75,9 +75,11 @@ function handleLogin(event) {
     const userData = JSON.parse(storedUserData);
     if (userData.password === password) {
         sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userEmail', email);
         showNotification("Connexion réussie !", "success");
         setTimeout(() => {
-            window.location.href = '../../index.html';
+            const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/';
+            window.location.href = redirectUrl;
         }, 1000);
     } else {
         showNotification("Email ou mot de passe incorrect.", "error");

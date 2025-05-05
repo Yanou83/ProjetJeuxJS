@@ -1,0 +1,184 @@
+* {
+    /* empécher le drag and drop d'images et de texte */
+    -webkit-user-select: none;  /* Safari */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Standard */
+    -webkit-user-drag: none;    /* Safari */
+    -khtml-user-drag: none;     /* Konqueror HTML */
+    -moz-user-drag: none;       /* Firefox */
+    
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Rock Salt', Arial, Helvetica, sans-serif;
+}
+
+/* le fond de la page */
+body {
+    background-image: url('assets/background/fond.png');
+    color: rgb(0, 0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-container {
+    overflow: hidden;
+}
+
+/* Header du jeux */
+.game-header {
+    padding: 20px;
+    background-image: url('assets/cadre/cadre.png');
+    background-size: 100% 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+}
+
+/* Chrono */
+.timer {
+    font-size: 1em;
+    color: #000000;
+}
+
+/* Bouton du jeux */
+.controls {
+    display: flex;
+}
+
+#start-wave {
+    background-image: url('assets/boutons/papierDechirerRed.png');
+}
+
+.controls button {
+    all: unset;
+    background-image: url('assets/boutons/papierDechirer.png');
+    background-size: 100% 100%;
+    
+    padding: 5px 60px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;    
+}
+
+/* Au survol du bouton */
+.controls button:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    text-decoration-style: wavy;
+    text-decoration-skip-ink: none;
+}
+
+/* Ecran de jeux principale */
+#game-area {
+    position: relative;
+}
+
+/* Le terrain de jeu */
+.game-map {
+    /* taille initialiser dans le fichier map js pour coller au quadrillage*/
+    position: relative;
+    overflow: hidden;
+}
+
+.cell:not(.path)  {
+    /* taille initialiser dans le fichier map js pour coller au quadrillage */
+    position: absolute;
+    background-image: url('assets/tuiles/TuilesVide.png');
+    background-size: 100% 100%;
+    /* Débugger */
+    /* border: 1px solid #8d4040;  */
+}
+
+/* boutton pour vendre une tour */
+.sell-button {
+    all: unset;
+    background-image: url('assets/boutons/papierDechirerRed.png');
+    background-size: 100% 100%;
+    padding: 5px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Footer du jeux */
+#tower-shop {
+    text-align: center;
+    display: flex;
+    background-image: url('assets/cadre/cadre.png');
+    background-size: 100% 100%;
+    padding: 10px;
+    justify-content: space-around;
+}
+
+.tower-on-shop{
+    cursor: pointer;
+    padding:15px;
+}
+
+.tower-info{
+    line-height: 1.2;
+    margin-bottom: 5px; 
+    font-size: 0.9em;
+}
+
+.tower-tooltip {
+    background-image:url('assets/post-it/Post-it.png');
+    background-size: 100% auto;
+    padding: 60px 20px 20px 20px;
+    z-index: 1000;
+}
+
+/* Notification  */
+#notif {
+    position: fixed;
+    top: 50px; /* Commence au-dessus de l'écran */
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgb(0, 0, 0);
+    padding: 10px 20px;
+    font-size: 16px;
+    z-index: 1000;
+    opacity: 0;
+    transition: top 0.5s ease, opacity 0.5s ease;
+    text-align: center;
+    min-width: 200px;
+    background-image: url('assets/boutons/papierDechirer.png');
+    background-size: 100% 100%;
+    padding: 0px 60px;
+}
+
+/* Menu */
+.menu {
+    text-align: center;
+}
+.menu button{
+    all: unset;
+    background-image: url('assets/boutons/papierDechirer.png');
+    background-size: 100% 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    text-decoration-style: wavy;
+    text-decoration-skip-ink: none;
+}
+
+/* Pour désactiver les clics sur le reste de la page flouter */
+.disabled-overlay > *:not(.menu) {
+    pointer-events: none; /* Désactive les clics */
+    filter: blur(3px); /* floute le reste */
+}

@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap');
 
 :root {
-    --violet: #d33bfd;
+    --red: red;
 }
 
 body {
@@ -30,7 +30,7 @@ body {
 
 .login-container h1 {
     margin-bottom: 20px;
-    color: var(--violet);
+    color: var(--red);
 }
 
 .login-container label {
@@ -55,7 +55,7 @@ body {
 
 .login-container button {
     padding: 10px;
-    background-color: var(--violet);
+    background-color: var(--red);
     border: none;
     border-radius: 5px;
     color: white;
@@ -95,7 +95,7 @@ body {
 }
 
 .form-toggle button.active {
-    border-bottom: 3px solid var(--violet);
+    border-bottom: 3px solid var(--red);
 }
 
 .form-toggle button:hover {
