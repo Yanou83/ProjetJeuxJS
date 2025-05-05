@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!selectedGame || selectedGame == null) return;
         const gameRoutes = {
             Ratscooter: '/Ratscooter',
-            Jeu2: '/jeu2',
+            Crazybowling: '/Crazybowling',
             TowerDefense: '/jeux/TOWER_DEFENSE/index.html'
         };
         window.location.href = gameRoutes[selectedGame] || '/';
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function displayScores() {
-    const gameTitles = ["Ratscooter", "Jeu2", "TowerDefense"]; // Liste des jeux
+    const gameTitles = ["Ratscooter", "Crazybowling", "TowerDefense"]; // Liste des jeux
     const divJeux = document.querySelectorAll('.divJeu');
 
     divJeux.forEach((divJeu, index) => {

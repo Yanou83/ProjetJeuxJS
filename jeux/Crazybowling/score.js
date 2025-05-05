@@ -98,6 +98,7 @@ export const incrementRound = () => {
 
 // Stop the game
 export const stopGame = () => {
+  handleFinalScore()
   clearLocalStorage()
   createNewGame() // Show a replay button to restart
 }
@@ -109,5 +110,64 @@ export const clearLocalStorage = () => {
   console.log("LocalStorage cleared before starting the game.")
 }
 
-// Export for other modules
+export const handleFinalScore = () => {
+  const userEmail = sessionStorage.getItem("userEmail")
+  const finalScore = localStorage.getItem("sessionScore");
+  if (finalScore >= getBestScore(userEmail, "Crazybowling")){
+    saveBestScore(parseInt(finalScore), userEmail, "Crazybowling")
+    console.log("saved best score")
+  } 
+  else {
+    console.log("Not a best score didnt save it")
+  }
+}
+
+export const getBestScore = (userEmail, gameName) => {
+
+  if (!userEmail || !gameName) {
+      console.error("Données utilisateur ou jeu invalides pour récupérer le score.");
+      return 0;
+  }
+
+  let storedUserData = localStorage.getItem(userEmail);
+
+  if (!storedUserData) {
+      console.warn(`Aucun score trouvé pour l'utilisateur ${userEmail}.`);
+      return 0;
+  }
+
+  let userData = JSON.parse(storedUserData);
+  return userData.scores?.[gameName] || 0;
+}
+
+export const saveBestScore = (score, userEmail, gameName) => {
+  if (!userEmail || !gameName) {
+      console.error("Données utilisateur ou jeu invalides pour l'enregistrement du score.");
+      return;
+  }
+
+  // Récupérer les données de l'utilisateur dans localStorage
+  let storedUserData = localStorage.getItem(userEmail);
+
+  if (!storedUserData) {
+      console.error(`Utilisateur avec l'email ${userEmail} non trouvé.`);
+      return;
+  }
+
+  let userData = JSON.parse(storedUserData);
+
+  // Vérifier si le champ `scores` existe, sinon l'initialiser
+  if (!userData.scores) {
+      userData.scores = {};
+  }
+
+  // Ajouter ou mettre à jour le score du jeu
+  if (!userData.scores[gameName] || score > userData.scores[gameName]) {
+      userData.scores[gameName] = score;
+
+      // Sauvegarde dans localStorage
+      localStorage.setItem(userEmail, JSON.stringify(userData));
+  }
+}
+
 export { score, sessionScore, round }
